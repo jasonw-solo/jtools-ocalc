@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AppSel Code Calculator - 400G/800G/1.6T</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: "Microsoft YaHei", "Segoe UI", sans-serif; background: #f5f7fa; color: #333; min-height: 100vh; }
+.container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+h1 { text-align: center; font-size: 1.6em; margin-bottom: 6px; color: #1a3a5c; }
+.subtitle { text-align: center; font-size: 0.85em; color: #888; margin-bottom: 20px; }
+.card { background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 20px; margin-bottom: 16px; }
+.card-title { font-size: 1.05em; font-weight: 700; color: #1a3a5c; margin-bottom: 12px; border-left: 4px solid #3b82f6; padding-left: 10px; }
+.selector-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
+.selector-group { flex: 1; min-width: 200px; }
+.selector-group label { display: block; font-weight: 600; font-size: 0.9em; margin-bottom: 4px; color: #555; }
+select { width: 100%; padding: 8px 10px; border: 1px solid #d0d5dd; border-radius: 6px; font-size: 0.9em; background: #fff; cursor: pointer; }
+select:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.15); }
+table { width: 100%; border-collapse: collapse; font-size: 0.85em; }
+th { background: #1a3a5c; color: #fff; padding: 8px 6px; text-align: left; font-weight: 600; }
+td { padding: 7px 6px; border-bottom: 1px solid #e8ecf2; }
+tr:nth-child(even) td { background: #f8fafd; }
+tr:hover td { background: #eef2ff; }
+.mono { font-family: "Consolas", "Courier New", monospace; }
+.compat-note { font-size: 0.82em; color: #666; margin-top: 8px; padding: 8px; background: #fffbe6; border-radius: 6px; border: 1px solid #f0e0a0; }
+.compat-note strong { color: #b45309; }
+.section-desc { font-size: 0.82em; color: #888; margin-bottom: 10px; }
+.back-button { display: inline-flex; align-items: center; gap: .35rem; padding: .3rem .7rem; background: #f0f4f8; color: #1a3a5c; text-decoration: none; border-radius: 5px; font-size: .82rem; font-weight: 500; transition: all .2s; border: 1px solid #d0d5dd; margin-bottom: 10px; }
+.back-button:hover { background: #3b82f6; color: #fff; border-color: #3b82f6; transform: translateX(-2px); }
+.app-footer{background:#fff;border-top:1px solid #e5e7eb;padding:.5rem 0;margin-top:1.5rem;text-align:center}
+.app-footer .footer-content{max-width:1100px;margin:0 auto;padding:0 20px}
+.app-footer p{color:#6c757d;font-size:.75rem;margin:0}
+.app-footer a{color:#1a3a5c;text-decoration:none;font-weight:500}
+.app-footer a:hover{text-decoration:underline}
+.app-footer .footer-links{display:flex;justify-content:center;align-items:center;gap:.75rem;flex-wrap:wrap;margin-top:.2rem}
+.app-footer .separator{color:#ccc}
+@media(max-width:768px){
+.container{padding:12px}
+.card{padding:12px}
+h1{font-size:1.2em}
+table{font-size:.72em}
+th,td{padding:4px 3px}
+.card-title{font-size:.92em}
+}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+</style>
+</head>
+<body>
+<div class="container">
+<a href="../home/index.html" class="back-button">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+<span>返回首页</span>
+</a>
+<h1>AppSel Code Calculator</h1>
+<p class="subtitle">400G / 800G / 1.6T 光收发模块 — 基于 CMIS v5.3 &amp; SFF-8024 Rev 4.12</p>
+
+<div class="card">
+<div class="card-title">选择配置</div>
+<div class="selector-row">
+<div class="selector-group">
+<label for="sel-ff">Form Factor</label>
+<select id="sel-ff"><option value="">-- 请选择 --</option></select>
+</div>
+<div class="selector-group">
+<label for="sel-host">Host Interface</label>
+<select id="sel-host"><option value="">-- 请先选择 Form Factor --</option></select>
+</div>
+<div class="selector-group">
+<label for="sel-media">Media Interface</label>
+<select id="sel-media"><option value="">-- 请先选择 Host Interface --</option></select>
+</div>
+<div class="selector-group" id="ib-lane-group" style="display:none;">
+<label for="sel-ib-lanes">IB Host Lane数</label>
+<select id="sel-ib-lanes">
+<option value="1">1 lane</option>
+<option value="2">2 lanes</option>
+<option value="4">4 lanes</option>
+<option value="8">8 lanes</option>
+</select>
+</div>
+</div>
+</div>
+
+<div class="card" id="descriptor-card" style="display:none;">
+<div class="card-title">Application Descriptor 字节详情</div>
+<p class="section-desc">5字节 Application Descriptor 结构（CMIS Table 6-1）</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>字节</th><th>位</th><th>名称</th><th>值 (Hex)</th><th>值 (Bin)</th><th>说明</th></tr></thead>
+<tbody id="descriptor-tbody"></tbody>
+</table>
+</div>
+</div>
+
+<div class="card" id="compat-card" style="display:none;">
+<div class="card-title">兼容性校验</div>
+<div id="compat-info"></div>
+</div>
+</div>
+
+<script>
+const HOST_INTERFACES = [
+  { id: 0x0A, name: "50GAUI-1 C2M", rate: 53.13, lanes: 1, laneRate: 26.5625, type: "ETH" },
+  { id: 0x0D, name: "100GAUI-2 C2M", rate: 106.25, lanes: 2, laneRate: 26.5625, type: "ETH" },
+  { id: 0x4B, name: "100GAUI-1-S C2M", rate: 106.25, lanes: 1, laneRate: 53.125, type: "ETH" },
+  { id: 0x4C, name: "100GAUI-1-L C2M", rate: 106.25, lanes: 1, laneRate: 53.125, type: "ETH" },
+  { id: 0x0F, name: "200GAUI-4 C2M", rate: 212.50, lanes: 4, laneRate: 26.5625, type: "ETH" },
+  { id: 0x4D, name: "200GAUI-2-S C2M", rate: 212.50, lanes: 2, laneRate: 53.125, type: "ETH" },
+  { id: 0x4E, name: "200GAUI-2-L C2M", rate: 212.50, lanes: 2, laneRate: 53.125, type: "ETH" },
+  { id: 0x80, name: "200GAUI-1", rate: 212.50, lanes: 1, laneRate: 106.25, type: "ETH" },
+  { id: 0x11, name: "400GAUI-8 C2M", rate: 425.00, lanes: 8, laneRate: 26.5625, type: "ETH" },
+  { id: 0x4F, name: "400GAUI-4-S C2M", rate: 425.00, lanes: 4, laneRate: 53.125, type: "ETH" },
+  { id: 0x50, name: "400GAUI-4-L C2M", rate: 425.00, lanes: 4, laneRate: 53.125, type: "ETH" },
+  { id: 0x81, name: "400GAUI-2", rate: 425.00, lanes: 2, laneRate: 106.25, type: "ETH" },
+  { id: 0x51, name: "800GAUI-8-S C2M", rate: 850.00, lanes: 8, laneRate: 53.125, type: "ETH" },
+  { id: 0x52, name: "800GAUI-8-L C2M", rate: 850.00, lanes: 8, laneRate: 53.125, type: "ETH" },
+  { id: 0x82, name: "800GAUI-4", rate: 850.00, lanes: 4, laneRate: 106.25, type: "ETH" },
+  { id: 0x83, name: "1.6TAUI-8", rate: 1700.00, lanes: 8, laneRate: 106.25, type: "ETH" },
+  { id: 0x31, name: "IB HDR", rate: 53.13, lanes: 12, laneRate: 26.5625, type: "IB", configurableLanes: true },
+  { id: 0x32, name: "IB NDR", rate: 106.25, lanes: 12, laneRate: 53.125, type: "IB", configurableLanes: true },
+  { id: 0xA0, name: "IB XDR", rate: 0, lanes: 8, laneRate: 106.25, type: "IB", configurableLanes: true }
+];
+
+const MEDIA_INTERFACES_MMF = [
+  { id: 0x07, name: "50GBASE-SR", rate: 53.13, lanes: 1, laneRate: 26.5625, dist: "100m", fiber: "MMF" },
+  { id: 0x0C, name: "100GBASE-SR2", rate: 106.25, lanes: 2, laneRate: 26.5625, dist: "100m", fiber: "MMF" },
+  { id: 0x0D, name: "100GBASE-SR1", rate: 106.25, lanes: 1, laneRate: 53.125, dist: "100m", fiber: "MMF" },
+  { id: 0x1D, name: "100GBASE-VR1", rate: 106.25, lanes: 1, laneRate: 53.125, dist: "50m", fiber: "MMF" },
+  { id: 0x0E, name: "200GBASE-SR4", rate: 212.50, lanes: 4, laneRate: 26.5625, dist: "100m", fiber: "MMF" },
+  { id: 0x1B, name: "200GBASE-SR2", rate: 212.50, lanes: 2, laneRate: 53.125, dist: "100m", fiber: "MMF" },
+  { id: 0x1E, name: "200GBASE-VR2", rate: 212.50, lanes: 2, laneRate: 53.125, dist: "50m", fiber: "MMF" },
+  { id: 0x10, name: "400GBASE-SR8", rate: 425.00, lanes: 8, laneRate: 26.5625, dist: "100m", fiber: "MMF" },
+  { id: 0x11, name: "400GBASE-SR4", rate: 425.00, lanes: 4, laneRate: 53.125, dist: "100m", fiber: "MMF" },
+  { id: 0x1F, name: "400GBASE-VR4", rate: 425.00, lanes: 4, laneRate: 53.125, dist: "50m", fiber: "MMF" },
+  { id: 0x12, name: "800GBASE-SR8", rate: 850.00, lanes: 8, laneRate: 53.125, dist: "100m", fiber: "MMF" },
+  { id: 0x20, name: "800GBASE-VR8", rate: 850.00, lanes: 8, laneRate: 53.125, dist: "50m", fiber: "MMF" }
+];
+
+const MEDIA_INTERFACES_SMF = [
+  { id: 0x0B, name: "50GBASE-FR", rate: 53.13, lanes: 1, laneRate: 26.5625, dist: "2km", fiber: "SMF" },
+  { id: 0x0C, name: "50GBASE-LR", rate: 53.13, lanes: 1, laneRate: 26.5625, dist: "10km", fiber: "SMF" },
+  { id: 0x14, name: "100GBASE-DR", rate: 106.25, lanes: 1, laneRate: 53.125, dist: "500m", fiber: "SMF" },
+  { id: 0x15, name: "100GBASE-FR", rate: 106.25, lanes: 1, laneRate: 53.125, dist: "2km", fiber: "SMF" },
+  { id: 0x16, name: "100GBASE-LR", rate: 106.25, lanes: 1, laneRate: 53.125, dist: "10km", fiber: "SMF" },
+  { id: 0x4A, name: "100G-LR1-20", rate: 106.25, lanes: 1, laneRate: 53.125, dist: "20km", fiber: "SMF" },
+  { id: 0x17, name: "200GBASE-DR4", rate: 212.50, lanes: 4, laneRate: 26.5625, dist: "500m", fiber: "SMF" },
+  { id: 0x18, name: "200GBASE-FR4", rate: 212.50, lanes: 4, laneRate: 26.5625, dist: "2km", fiber: "SMF" },
+  { id: 0x19, name: "200GBASE-LR4", rate: 212.50, lanes: 4, laneRate: 26.5625, dist: "10km", fiber: "SMF" },
+  { id: 0x73, name: "200GBASE-DR1", rate: 212.50, lanes: 1, laneRate: 106.25, dist: "500m", fiber: "SMF" },
+  { id: 0x74, name: "200GBASE-DR1-2", rate: 212.50, lanes: 1, laneRate: 113.4375, dist: "2km", fiber: "SMF" },
+  { id: 0x1A, name: "400GBASE-FR8", rate: 425.00, lanes: 8, laneRate: 26.5625, dist: "2km", fiber: "SMF" },
+  { id: 0x1B, name: "400GBASE-LR8", rate: 425.00, lanes: 8, laneRate: 26.5625, dist: "10km", fiber: "SMF" },
+  { id: 0x1C, name: "400GBASE-DR4", rate: 425.00, lanes: 4, laneRate: 53.125, dist: "500m", fiber: "SMF" },
+  { id: 0x55, name: "400GBASE-DR4-2", rate: 425.00, lanes: 4, laneRate: 53.125, dist: "2km", fiber: "SMF" },
+  { id: 0x75, name: "400GBASE-DR2", rate: 425.00, lanes: 2, laneRate: 106.25, dist: "500m", fiber: "SMF" },
+  { id: 0x76, name: "400GBASE-DR2-2", rate: 425.00, lanes: 2, laneRate: 113.4375, dist: "2km", fiber: "SMF" },
+  { id: 0x1D, name: "400GBASE-FR4", rate: 425.00, lanes: 4, laneRate: 53.125, dist: "2km", fiber: "SMF" },
+  { id: 0x1E, name: "400G-LR4-10", rate: 425.00, lanes: 4, laneRate: 53.125, dist: "10km", fiber: "SMF" },
+  { id: 0x56, name: "800GBASE-DR8", rate: 850.00, lanes: 8, laneRate: 53.125, dist: "500m", fiber: "SMF" },
+  { id: 0x57, name: "800GBASE-DR8-2", rate: 850.00, lanes: 8, laneRate: 53.125, dist: "2km", fiber: "SMF" },
+  { id: 0x77, name: "800GBASE-DR4", rate: 850.00, lanes: 4, laneRate: 106.25, dist: "500m", fiber: "SMF" },
+  { id: 0x78, name: "800GBASE-DR4-2", rate: 850.00, lanes: 4, laneRate: 113.4375, dist: "2km", fiber: "SMF" },
+  { id: 0x79, name: "800GBASE-FR4-500", rate: 850.00, lanes: 4, laneRate: 106.25, dist: "500m", fiber: "SMF" },
+  { id: 0x7A, name: "800GBASE-FR4", rate: 850.00, lanes: 4, laneRate: 113.4375, dist: "2km", fiber: "SMF" },
+  { id: 0x7B, name: "800GBASE-LR4", rate: 850.00, lanes: 4, laneRate: 113.4375, dist: "10km", fiber: "SMF" },
+  { id: 0x7F, name: "1.6TBASE-DR8", rate: 1700.00, lanes: 8, laneRate: 106.25, dist: "500m", fiber: "SMF" },
+  { id: 0x80, name: "1.6TBASE-DR8-2", rate: 1700.00, lanes: 8, laneRate: 113.4375, dist: "2km", fiber: "SMF" }
+];
+
+const ALL_MEDIA = [...MEDIA_INTERFACES_MMF, ...MEDIA_INTERFACES_SMF];
+
+const FORM_FACTORS = [
+  { name: "QSFP112", maxLanes: 4, desc: "4 lanes" },
+  { name: "QSFPDD", maxLanes: 8, desc: "8 lanes" },
+  { name: "OSFP",   maxLanes: 8, desc: "8 lanes" }
+];
+
+function hex2(n) { return "0x" + n.toString(16).toUpperCase().padStart(2, "0"); }
+function bin8(n) { return "0b" + n.toString(2).padStart(8, "0"); }
+function hexByte(n) { return n.toString(16).toUpperCase().padStart(2, "0") + "h"; }
+
+function getLaneAssignmentOptions(groupLanes, ffMaxLanes) {
+  const numGroups = ffMaxLanes / groupLanes;
+  let val = 0;
+  for (let i = 0; i < numGroups; i++) {
+    val |= (1 << (i * groupLanes));
+  }
+  return val;
+}
+
+function getMediaTypeByte(mediaIf) {
+  if (mediaIf.fiber === "MMF") return 0x01;
+  if (mediaIf.fiber === "SMF") return 0x02;
+  return 0x00;
+}
+
+const selFF = document.getElementById("sel-ff");
+const selHost = document.getElementById("sel-host");
+const selMedia = document.getElementById("sel-media");
+const selIbLanes = document.getElementById("sel-ib-lanes");
+const ibLaneGroup = document.getElementById("ib-lane-group");
+
+FORM_FACTORS.forEach(ff => {
+  const opt = document.createElement("option");
+  opt.value = ff.name;
+  opt.textContent = ff.name + " (" + ff.desc + ")";
+  selFF.appendChild(opt);
+});
+
+selFF.addEventListener("change", function() {
+  const ffName = selFF.value;
+  selHost.innerHTML = "";
+  selMedia.innerHTML = '<option value="">-- 请先选择 Host Interface --</option>';
+  if (!ffName) {
+    selHost.innerHTML = '<option value="">-- 请先选择 Form Factor --</option>';
+    hideResults();
+    return;
+  }
+  const ff = FORM_FACTORS.find(f => f.name === ffName);
+  selHost.innerHTML = '<option value="">-- 请选择 --</option>';
+  HOST_INTERFACES.filter(h => h.configurableLanes || h.lanes <= ff.maxLanes).forEach(h => {
+    const opt = document.createElement("option");
+    opt.value = h.id;
+    const tag = h.type === "IB" ? "[IB]" : "[ETH]";
+    const laneInfo = h.configurableLanes ? "1/2/4/8/12 lanes" : (h.lanes + " lanes");
+    opt.textContent = hex2(h.id) + " " + h.name + " " + tag + " (" + laneInfo + ", " + h.rate + " Gb/s)";
+    selHost.appendChild(opt);
+  });
+  hideResults();
+});
+
+selHost.addEventListener("change", function() {
+  const hostId = parseInt(selHost.value);
+  selMedia.innerHTML = "";
+  if (!hostId) {
+    selMedia.innerHTML = '<option value="">-- 请先选择 Host Interface --</option>';
+    hideResults();
+    return;
+  }
+  const host = HOST_INTERFACES.find(h => h.id === hostId);
+  const ff = FORM_FACTORS.find(f => f.name === selFF.value);
+  if (host.configurableLanes) {
+    ibLaneGroup.style.display = "";
+    const maxAllowed = ff.maxLanes;
+    selIbLanes.innerHTML = "";
+    [1,2,4,8].filter(l => l <= maxAllowed).forEach(l => {
+      const opt = document.createElement("option");
+      opt.value = l;
+      opt.textContent = l + " lane" + (l > 1 ? "s" : "");
+      if (l === maxAllowed) opt.selected = true;
+      selIbLanes.appendChild(opt);
+    });
+  } else {
+    ibLaneGroup.style.display = "none";
+  }
+  selMedia.innerHTML = '<option value="">-- 请选择 --</option>';
+  const compatible = ALL_MEDIA.filter(m => m.lanes <= ff.maxLanes);
+  compatible.forEach(m => {
+    const opt = document.createElement("option");
+    opt.value = m.id + "|" + m.fiber;
+    const tag = m.fiber === "MMF" ? "[MMF]" : "[SMF]";
+    const hostLanesForMatch = host.configurableLanes ? (parseInt(selIbLanes.value) || ff.maxLanes) : host.lanes;
+    const hostRateForMatch = host.configurableLanes ? (hostLanesForMatch * host.laneRate) : host.rate;
+    const rateMatch = Math.abs(m.rate - hostRateForMatch) < 0.01;
+    const laneMatch = m.lanes === hostLanesForMatch;
+    const marker = (rateMatch && laneMatch) ? " \u2713" : "";
+    opt.textContent = hex2(m.id) + " " + m.name + " " + tag + " (" + m.lanes + " lanes, " + m.rate + " Gb/s, " + m.dist + ")" + marker;
+    selMedia.appendChild(opt);
+  });
+  hideResults();
+});
+
+selMedia.addEventListener("change", function() { doCalculate(); });
+selIbLanes.addEventListener("change", function() { doCalculate(); });
+
+function doCalculate() {
+  const hostId = parseInt(selHost.value);
+  const mediaVal = selMedia.value;
+  if (!hostId || !mediaVal) { hideResults(); return; }
+  let host = HOST_INTERFACES.find(h => h.id === hostId);
+  const [mediaIdStr, fiber] = mediaVal.split("|");
+  const mediaId = parseInt(mediaIdStr);
+  const media = ALL_MEDIA.find(m => m.id === mediaId && m.fiber === fiber);
+  const ff = FORM_FACTORS.find(f => f.name === selFF.value);
+  if (host.configurableLanes) {
+    const ibLanes = parseInt(selIbLanes.value);
+    host = Object.assign({}, host, { lanes: ibLanes, rate: ibLanes * host.laneRate * 2 });
+  }
+  calculate(ff, host, media);
+}
+
+function hideResults() {
+  document.getElementById("descriptor-card").style.display = "none";
+  document.getElementById("compat-card").style.display = "none";
+}
+
+function calculate(ff, host, media) {
+  const hostIfId = host.id;
+  const mediaIfId = media.id;
+  const hostLaneCount = host.lanes;
+  const mediaLaneCount = media.lanes;
+  const hostLaneAssign = getLaneAssignmentOptions(hostLaneCount, ff.maxLanes);
+  const mediaLaneAssign = getLaneAssignmentOptions(mediaLaneCount, ff.maxLanes);
+  const mediaType = getMediaTypeByte(media);
+
+  const byte1 = hostIfId;
+  const byte2 = mediaIfId;
+  const byte3 = ((hostLaneCount & 0xF) << 4) | (mediaLaneCount & 0xF);
+  const byte4 = hostLaneAssign;
+  const byte5 = mediaLaneAssign;
+
+  const tbody = document.getElementById("descriptor-tbody");
+  tbody.innerHTML = "";
+  const descRows = [
+    { byte: "1", bits: "7:0", name: "HostInterfaceID", val: byte1, desc: host.name },
+    { byte: "2", bits: "7:0", name: "MediaInterfaceID", val: byte2, desc: media.name },
+    { byte: "3", bits: "7:4", name: "HostLaneCount", val: hostLaneCount, desc: hostLaneCount + " lanes" },
+    { byte: "3", bits: "3:0", name: "MediaLaneCount", val: mediaLaneCount, desc: mediaLaneCount + " lanes" },
+    { byte: "4", bits: "7:0", name: "HostLaneAssignmentOptions", val: byte4, desc: laneAssignDesc(hostLaneAssign, hostLaneCount) },
+    { byte: "5", bits: "7:0", name: "MediaLaneAssignmentOptions", val: byte5, desc: laneAssignDesc(mediaLaneAssign, mediaLaneCount) }
+  ];
+  descRows.forEach(r => {
+    const tr = document.createElement("tr");
+    const isLaneAssign = r.name.includes("LaneAssignment");
+    const hexStr = isLaneAssign ? hex2(r.val) : (r.name.includes("LaneCount") ? (r.val).toString(16).toUpperCase() + "h" : hex2(r.val));
+    const binStr = isLaneAssign ? bin8(r.val) : (r.name.includes("LaneCount") ? "0b" + r.val.toString(2).padStart(4, "0") : bin8(r.val));
+    tr.innerHTML = '<td class="mono">' + r.byte + '</td><td class="mono">' + r.bits + '</td><td>' + r.name + '</td><td class="mono">' + hexStr + '</td><td class="mono">' + binStr + '</td><td>' + r.desc + '</td>';
+    tbody.appendChild(tr);
+  });
+  document.getElementById("descriptor-card").style.display = "";
+
+  const compatDiv = document.getElementById("compat-info");
+  compatDiv.innerHTML = "";
+  const rateMatch = Math.abs(media.rate - host.rate) < 0.01;
+  const laneMatch = media.lanes === host.lanes;
+  const hostLaneOk = host.lanes <= ff.maxLanes;
+  const mediaLaneOk = media.lanes <= ff.maxLanes;
+  let notes = [];
+  if (!rateMatch) notes.push("Host速率(" + host.rate + " Gb/s)与Media速率(" + media.rate + " Gb/s)不匹配");
+  if (!laneMatch) notes.push("Host lane数(" + host.lanes + ")与Media lane数(" + media.lanes + ")不同，需确认lane映射");
+  if (!hostLaneOk) notes.push("Host lane数(" + host.lanes + ")超过" + ff.name + "最大lane数(" + ff.maxLanes + ")");
+  if (!mediaLaneOk) notes.push("Media lane数(" + media.lanes + ")超过" + ff.name + "最大lane数(" + ff.maxLanes + ")");
+  if (notes.length === 0) {
+    compatDiv.innerHTML = '<div class="compat-note"><strong>\u2713 配置兼容</strong> — Host/Media速率和lane数匹配，且在' + ff.name + ' lane范围内。</div>';
+  } else {
+    compatDiv.innerHTML = '<div class="compat-note"><strong>\u26A0 注意</strong><br>' + notes.map(n => "\u2022 " + n).join("<br>") + '</div>';
+  }
+  document.getElementById("compat-card").style.display = "";
+}
+
+function laneAssignDesc(val, lanes) {
+  const bits = val.toString(2).padStart(8, "0").split("").reverse();
+  const startLanes = [];
+  bits.forEach((b, i) => { if (b === "1") startLanes.push(i + 1); });
+  return "可从Lane " + startLanes.join("/") + "开始 (" + lanes + "-lane组)";
+}
+</script>
+<script src="../assets/config.js"></script>
+<script src="../assets/footer.js"></script>
+</body>
+</html>

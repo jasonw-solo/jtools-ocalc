@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>进制转换器 - JTools-OCalc</title>
+    <link rel="stylesheet" href="../home/style.css">
+    <link rel="stylesheet" href="converter.css">
+    <link rel="icon" href="../assets/JTools-light.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 头部导航 -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="nav-bar">
+                    <a href="../home/index.html" class="back-button">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        <span>返回首页</span>
+                    </a>
+                    <div class="page-title">
+                        <span class="page-icon">🔢</span>
+                        <h1>进制转换器</h1>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主内容区 -->
+        <main class="app-main">
+            <div class="container">
+                <div class="converter-card">
+                    <!-- 横向排列的输入框 -->
+                    <div class="inputs-row">
+                        <!-- 十进制输入 -->
+                        <div class="input-section">
+                            <div class="input-header">
+                                <span class="input-label">十进制 (DEC)</span>
+                                <button class="copy-btn" data-target="decimalInput" title="复制">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <input type="text" id="decimalInput" class="input-box" placeholder="输入十进制数值 (0-9)" autocomplete="off">
+                        </div>
+
+                        <!-- 十六进制输入 -->
+                        <div class="input-section">
+                            <div class="input-header">
+                                <span class="input-label">十六进制 (HEX)</span>
+                                <button class="copy-btn" data-target="hexInput" title="复制">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <input type="text" id="hexInput" class="input-box" placeholder="输入十六进制数值 (0-9, A-F)" autocomplete="off">
+                        </div>
+
+                        <!-- 二进制输入 -->
+                        <div class="input-section">
+                            <div class="input-header">
+                                <span class="input-label">二进制 (BIN)</span>
+                                <button class="copy-btn" data-target="binaryInput" title="复制">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <input type="text" id="binaryInput" class="input-box" placeholder="输入二进制数值 (0-1)" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <!-- 使用提示 -->
+                    <div class="tips-section">
+                        <div class="tips-title">使用提示</div>
+                        <ul class="tips-list">
+                            <li>在任意输入框输入,其他框自动转换</li>
+                            <li>十进制: 只能输入 0-9</li>
+                            <li>十六进制: 只能输入 0-9 和 A-F</li>
+                            <li>二进制: 只能输入 0 和 1</li>
+                            <li>支持大数值转换 (最大 2^53-1)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 页脚 -->
+    </div>
+
+    <script src="../assets/config.js"></script>
+    <script src="../assets/footer.js"></script>
+    <script src="converter.js"></script>
+</body>
+</html>

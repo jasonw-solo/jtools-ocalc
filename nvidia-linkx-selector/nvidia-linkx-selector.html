@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NVIDIA LinkX 光模块选型指南</title>
+<style>
+:root{--bg:#f8f9fa;--card:#fff;--border:#dee2e6;--accent:#76b900;--accent2:#1a1a2e;--text:#212529;--muted:#6c757d;--ib:#0d6efd;--eth:#fd7e14;--linkx:#76b900;--sidebar-w:260px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.header{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+.back-button{display:inline-flex;align-items:center;gap:.35rem;padding:.3rem .7rem;background:rgba(255,255,255,.15);color:#fff;text-decoration:none;border-radius:5px;font-size:.82rem;font-weight:500;transition:all .2s;border:1px solid rgba(255,255,255,.25)}
+.back-button:hover{background:rgba(255,255,255,.3);transform:translateX(-2px)}
+.header h1{font-size:1.3rem}
+.header h1 .badge{display:inline-block;background:var(--accent);color:#000;padding:.1rem .5rem;border-radius:3px;font-size:.7rem;font-weight:700;margin-left:.5rem}
+.header .subtitle{opacity:.7;font-size:.8rem}
+.layout{display:flex;height:calc(100vh - 52px);overflow:hidden}
+.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--card);border-right:1px solid var(--border);overflow-y:auto;overflow-x:hidden;flex-shrink:0}
+.sidebar-toggle{display:none;position:fixed;top:52px;left:0;z-index:100;background:var(--accent);color:#000;border:none;padding:.4rem .6rem;cursor:pointer;font-size:1rem}
+.tree-item{display:flex;align-items:center;gap:.35rem;padding:.35rem .6rem;padding-left:calc(.6rem + var(--depth,0)*1rem);cursor:pointer;font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:background .15s;user-select:none}
+.tree-item:hover{background:#e9ecef}
+.tree-item.active{background:var(--accent);color:#000;font-weight:600}
+.tree-item .arrow{font-size:.65rem;transition:transform .2s;flex-shrink:0;width:14px;text-align:center}
+.tree-item .arrow.open{transform:rotate(90deg)}
+.tree-item .icon{flex-shrink:0}
+.tree-children{display:none}
+.tree-children.open{display:block}
+.main{flex:1;overflow-y:auto;padding:1rem 1.5rem}
+.section-title{font-size:1.1rem;font-weight:700;margin:1rem 0 .6rem;padding-bottom:.25rem;border-bottom:2px solid var(--accent);display:flex;align-items:center;gap:.5rem}
+.section-title .icon{font-size:1.2rem}
+.legend{display:flex;flex-wrap:wrap;gap:.6rem;margin:.5rem 0;font-size:.82rem}
+.legend span{display:flex;align-items:center;gap:.25rem}
+.legend .dot{width:10px;height:10px;border-radius:2px;display:inline-block}
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:.8rem;overflow:hidden;transition:box-shadow .2s}
+.card:hover{box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:.6rem .8rem;cursor:pointer;user-select:none}
+.card-header:hover{background:#f0f0f0}
+.card-header .name{font-weight:700;font-size:.95rem;display:flex;align-items:center;gap:.4rem}
+.card-header .name .tag{font-size:.65rem;padding:.1rem .35rem;border-radius:3px;color:#fff;font-weight:600}
+.card-header .summary{color:var(--muted);font-size:.78rem}
+.card-header .arrow{transition:transform .2s;font-size:.85rem;color:var(--muted)}
+.card.open .card-header .arrow{transform:rotate(90deg)}
+.card-body{display:none;padding:0 .8rem .6rem}
+.card.open .card-body{display:block}
+.rate-box{display:flex;flex-wrap:wrap;gap:.5rem;margin:.3rem 0 .5rem}
+.rate-section{flex:1;min-width:200px;border:1px solid var(--border);border-radius:6px;padding:.4rem .6rem}
+.rate-section .rate-title{font-weight:700;font-size:.78rem;margin-bottom:.2rem;display:flex;align-items:center;gap:.25rem}
+.rate-section .rate-list{display:flex;flex-wrap:wrap;gap:.25rem}
+.rate-chip{font-size:.72rem;padding:.1rem .35rem;border-radius:3px;background:#e9ecef;font-weight:500}
+.rate-chip.active{background:var(--accent);color:#000;font-weight:700}
+.rate-note{font-size:.7rem;color:var(--muted);margin-top:.15rem;font-style:italic}
+.spec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.3rem;margin:.4rem 0}
+.spec-item{display:flex;gap:.25rem;font-size:.78rem;padding:.15rem .35rem;background:#f8f9fa;border-radius:3px}
+.spec-item .label{color:var(--muted);white-space:nowrap;min-width:70px}
+.spec-item .value{font-weight:500}
+.mod-table{width:100%;border-collapse:collapse;font-size:.78rem;margin:.4rem 0}
+.mod-table th{background:#f0f0f0;padding:.3rem .45rem;text-align:left;font-weight:600;white-space:nowrap;border-bottom:2px solid var(--border)}
+.mod-table td{padding:.3rem .45rem;border-bottom:1px solid #eee;vertical-align:top}
+.mod-table tr:hover td{background:#f8f9fa}
+.mod-table .pn{font-weight:600;cursor:pointer;color:var(--accent2)}
+.mod-table .pn:hover{text-decoration:underline}
+.badge-ib{background:var(--ib);color:#fff;padding:.05rem .3rem;border-radius:2px;font-size:.65rem;font-weight:600}
+.badge-eth{background:var(--eth);color:#fff;padding:.05rem .3rem;border-radius:2px;font-size:.65rem;font-weight:600}
+.badge-linkx{background:var(--linkx);color:#000;padding:.05rem .3rem;border-radius:2px;font-size:.65rem;font-weight:600}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;justify-content:center;align-items:center;padding:1rem}
+.modal-overlay.show{display:flex}
+.modal{background:var(--card);border-radius:10px;max-width:600px;width:100%;max-height:80vh;overflow-y:auto;padding:1.5rem;box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.modal h2{font-size:1.1rem;margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem}
+.modal .pn-display{font-size:1.3rem;font-weight:700;font-family:monospace;letter-spacing:.5px;margin:.3rem 0;display:flex;align-items:center;gap:.5rem}
+.copy-btn{display:inline-flex;align-items:center;gap:.2rem;padding:.15rem .4rem;border:1px solid var(--border);border-radius:4px;background:var(--card);cursor:pointer;font-size:.72rem;color:var(--muted);transition:all .2s}
+.copy-btn:hover{background:var(--accent);color:#000;border-color:var(--accent)}
+.copy-btn.copied{background:var(--accent);color:#000;border-color:var(--accent)}
+.device-link{color:inherit;text-decoration:none}
+.device-link:hover{text-decoration:underline;color:var(--accent)}
+.dev-name-wrap{display:inline-flex;align-items:center;gap:.25rem}
+.dev-name-wrap .copy-btn{font-size:.6rem;padding:.05rem .25rem}
+.doc-link{display:inline-flex;align-items:center;gap:.2rem;padding:.1rem .35rem;border:1px solid var(--accent);border-radius:3px;background:transparent;cursor:pointer;font-size:.68rem;color:var(--accent);text-decoration:none;transition:all .2s;margin-left:.3rem}
+.doc-link:hover{background:var(--accent);color:#000}
+.modal .close{float:right;cursor:pointer;font-size:1.2rem;color:var(--muted);border:none;background:none}
+.modal .close:hover{color:var(--text)}
+.modal .spec-grid{margin:.5rem 0}
+.note{background:#fff3cd;border-left:3px solid #ffc107;padding:.4rem .6rem;font-size:.78rem;margin:.4rem 0;border-radius:0 4px 4px 0}
+.note strong{color:#856404}
+.arch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin:.8rem 0}
+.arch-card{background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.arch-header{padding:.6rem .8rem;display:flex;align-items:center;gap:.5rem;border-bottom:2px solid var(--border)}
+.arch-badge{display:inline-block;padding:.15rem .5rem;border-radius:4px;font-size:.75rem;font-weight:700;color:#fff}
+.arch-badge.hopper{background:#76b900}
+.arch-badge.blackwell{background:#1a1a2e}
+.arch-badge.rubin{background:#0d6efd}
+.arch-sub{font-size:.78rem;color:var(--muted)}
+.arch-body{padding:.5rem .8rem}
+.arch-row{display:flex;gap:.4rem;padding:.25rem 0;font-size:.78rem;border-bottom:1px solid #f0f0f0}
+.arch-row:last-child{border-bottom:none}
+.arch-label{color:var(--muted);white-space:nowrap;min-width:90px;font-weight:600}
+.arch-val{font-weight:400}
+.footer{text-align:center;padding:1rem;color:var(--muted);font-size:.75rem;border-top:1px solid var(--border);margin-top:1.5rem}
+.app-footer{background:var(--card);border-top:1px solid var(--border);padding:.5rem 0;margin-top:auto;text-align:center}
+.app-footer .footer-content{max-width:1200px;margin:0 auto;padding:0 1rem}
+.app-footer p{color:var(--muted);font-size:.75rem;margin:0}
+.app-footer a{color:var(--accent2);text-decoration:none;font-weight:500}
+.app-footer a:hover{text-decoration:underline}
+.app-footer .footer-links{display:flex;justify-content:center;align-items:center;gap:.75rem;flex-wrap:wrap;margin-top:.2rem}
+.app-footer .separator{color:#ccc}
+@media(max-width:900px){
+.sidebar{position:fixed;top:52px;left:0;bottom:0;z-index:50;transform:translateX(-100%);transition:transform .25s}
+.sidebar.show{transform:translateX(0)}
+.sidebar-toggle{display:block}
+.main{padding:.8rem}
+.arch-grid{grid-template-columns:1fr}
+.spec-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="header">
+<a href="../home/index.html" class="back-button">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+<span>返回首页</span>
+</a>
+<h1>NVIDIA LinkX 选型指南 <span class="badge">2026-06</span></h1>
+<span class="subtitle">设备 &harr; LinkX 原厂模块 | 点击查看详细参数</span>
+</div>
+<button class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('show')">&#x2630;</button>
+<div class="layout">
+<div class="sidebar" id="sidebar"></div>
+<div class="main" id="main"></div>
+</div>
+<div class="modal-overlay" id="modalOverlay">
+<div class="modal" id="modal"></div>
+</div>
+<script>
+const DEV_URL={
+"qx800":"https://docs.nvidia.com/networking/display/xdrswitcheshwum",
+"qm2":"https://docs.nvidia.com/networking/display/qm97x0pub",
+"qm1":"https://www.nvidia.com/en-us/networking/infiniband-switching/",
+"sn5000":"https://docs.nvidia.com/networking/display/sn5000/introduction",
+"sn6":"https://www.nvidia.com/en-us/networking/ethernet-switching/",
+"sn4":"https://docs.nvidia.com/networking/display/sn4000/specifications",
+"sn3":"https://docs.nvidia.com/networking/display/sn3000um/introduction",
+"cx9":"https://docs.nvidia.com/networking/display/connectx9supernic/introduction",
+"cx8":"https://docs.nvidia.com/networking/display/connectx8supernic/introduction",
+"cx7":"https://docs.nvidia.com/networking/display/connectx7vpi",
+"bf4":"https://www.nvidia.cn/networking/products/data-processing-unit/",
+"bf3":"https://docs.nvidia.com/networking/display/bf3dpu"
+};
+const MOD_URL={
+"MMS4A00":"https://docs.nvidia.com/networking/display/9IAHX00XMOSFPTCVR1600",
+"MMS4C10":"https://docs.nvidia.com/networking/display/9IAU000XMOSFPTCVR1600",
+"MMS4C11":"https://docs.nvidia.com/networking/display/9IAU000XMOSFPTCVR1600",
+"MMS4X00-NM":"https://docs.nvidia.com/networking/display/MMS4X00NM800G500M",
+"MMS4X00-NM-FLT":"https://docs.nvidia.com/networking/display/MMS4X00NM800G500M",
+"MMS4X00-NM-HGX":"https://docs.nvidia.com/networking/display/MMS4X00NMHGX500",
+"MMS4X50-NM":"https://docs.nvidia.com/networking/display/MMS4X50NM800G2KMPUB",
+"MMS4X90-NR":"https://docs.nvidia.com/networking/display/MMS4X90NR800G",
+"MMS4X00-NS":"https://docs.nvidia.com/networking/display/800GMMS4X00NS",
+"MMS4X00-NS-T":"https://docs.nvidia.com/networking/display/800GMMS4X00NST",
+"MMS4X00-NM-T":"https://docs.nvidia.com/networking/display/MMS4X00NMT800G",
+"MMA4Z00-NS-T":"https://docs.nvidia.com/networking/display/800GMMA4Z00NST",
+"MMS4A20":"https://docs.nvidia.com/networking/display/9IAT0MOSFP800SPRHS",
+"MMS4X00-NM16":"https://docs.nvidia.com/networking/display/MMS4X00NM16",
+"MMA4Z00-NS400":"https://docs.nvidia.com/networking/display/MMA4Z00NS400",
+"MMA4Z00-NS400-T":"https://docs.nvidia.com/networking/display/MMA4Z00NS400T",
+"MMS4X00-NS400":"https://docs.nvidia.com/networking/display/MMS4X00NS400",
+"MMA1Z00-NS400":"https://docs.nvidia.com/networking/display/MMS1Z00NS400SR4",
+"MMA1Z00-NS400-T":"https://docs.nvidia.com/networking/display/MMA1Z00NS400T",
+"MMS1X00-NS400":"https://docs.nvidia.com/networking/display/MMS1X00NS400",
+"MMS1V00-WM":"https://docs.nvidia.com/networking/display/MMS1V00WM10",
+"MMA1T00-HS":"https://docs.nvidia.com/networking/display/MMA1T00HSSpec",
+"MMA1T00-VS":"https://docs.nvidia.com/networking/display/MMA1T00VSSpec",
+"MMS1W50-HM":"https://docs.nvidia.com/networking/display/MMS1W50HMSpec",
+"MMA1B00-E100":"https://docs.nvidia.com/networking/display/MMA1B00E100Spec",
+"MMA1B00-C100D":"https://docs.nvidia.com/networking/display/MMA1B00C100DSpec",
+"MMA1L10-CR":"https://docs.nvidia.com/networking/display/MMA1L10CRSpec",
+"MMA1L30-CM":"https://docs.nvidia.com/networking/display/MMA1L30CRCWDM410",
+"MMS1V70-CM":"https://docs.nvidia.com/networking/display/MMS1V70CM10",
+"MCA4K00":"https://docs.nvidia.com/networking/display/9809IAM300XXXX1600G",
+"MCA4K50":"https://docs.nvidia.com/networking/display/MCA4K50OSFP1600",
+"MCA7K10":"https://docs.nvidia.com/networking/display/9809IAO500XXXXRHS2x800",
+"MFA7U40-H00X":"https://docs.nvidia.com/networking/display/MFA7U40H00XDev",
+"MMA2L20-AR":"https://docs.nvidia.com/networking/display/MMA2L20ARSpec",
+"MMA2P00-AS":"https://docs.nvidia.com/networking/display/MMA2P00ASSpec",
+"MCP4Y10-Nxxx":"https://docs.nvidia.com/networking/display/MCP4Y10NXXX2x400pub",
+"MCP7Y00-Nxxx":"https://docs.nvidia.com/networking/display/MCP7Y00NXXX800pub",
+"MCP7Y10-Nxxx":"https://docs.nvidia.com/networking/display/MCP7Y10NXXX800Gpub",
+"MCA7J60-Nxxx":"https://docs.nvidia.com/networking/display/mca7j60nxxx800",
+"MCA7J65-Nxxx":"https://docs.nvidia.com/networking/display/MCA7J65NXXX800pub",
+"MCA7J70-Nxxx":"https://docs.nvidia.com/networking/display/MCA7J70NXXX800pub",
+"MCA7J75-Nxxx":"https://docs.nvidia.com/networking/display/MCA7J75NXXX800Pub",
+"MCA4J80-Nxxx":"https://docs.nvidia.com/networking/display/MCA4J80NXXX800Pub",
+"MCP7Y60-Hxxx":"https://docs.nvidia.com/networking/display/MCP7Y60HXXX400pub",
+"MCP7Y70-Hxxx":"https://docs.nvidia.com/networking/display/MCP7Y70HXXX400pub",
+"MFA7U10-H00x":"https://docs.nvidia.com/networking/display/MFA7U10H00X10",
+"MCP1650-H0xxEyy":"https://docs.nvidia.com/networking/display/MCP1650H0xxEyySpec",
+"MCP7H50-H0xxRyy":"https://docs.nvidia.com/networking/display/MCP7H50H0xxRyy200",
+"MFS1S00-HxxxV":"https://docs.nvidia.com/networking/display/MFS1S00HxxxV10",
+"MFS1S50-H0xxV":"https://docs.nvidia.com/networking/display/MFS1S50H0xxV200",
+"MCP1600-E0xxEyy":"https://docs.nvidia.com/networking/display/MCP1600E0xxxEyySpec",
+"MCP1600-C0xxEyyz":"https://docs.nvidia.com/networking/display/MCP1600C0xxEyyzSpec",
+"MFA1A00-xxxx":"https://docs.nvidia.com/networking/display/MFA1A00xxxxSpec"
+};
+const DATA=[
+{id:"qx800",cat:"ib-switch",name:"Quantum-X800 (Q3000系列)",tags:["IB","800G"],summary:"XDR 800G InfiniBand交换机系列, 115.2Tbps",
+ib:{rates:["XDR 800G","NDR 400G","HDR 200G"],serdes:"200G-PAM4/lane",active:[0]},
+eth:null,
+specs:{"ASIC":"Quantum-X800","SerDes":"200G-PAM4/lane","交换容量":"115.2Tbps","兼容OS":"NVOS (UFM / MLNX-OS)"},
+skus:[
+{model:"Q3400-RA",opn:"-",height:"4U",cooling:"风冷",power:"200-240V AC",ports:"72×OSFP (144×800G)",cpu:"Intel i3-8100H 4核",note:"标准风冷AC"},
+{model:"Q3401-RD",opn:"-",height:"4U",cooling:"风冷",power:"48-54V DC",ports:"72×OSFP (144×800G)",cpu:"Intel i3-8100H 4核",note:"风冷DC"},
+{model:"Q3200-RA",opn:"-",height:"2U",cooling:"风冷",power:"200-240V AC",ports:"36×OSFP ×2 (28.8T×2)",cpu:"-",note:"2个独立交换机, 边缘/中小集群"},
+{model:"Q3450-LD",opn:"-",height:"4U",cooling:"液冷85%+风冷15%",power:"48V DC",ports:"144×MPO (CPO硅光)",cpu:"-",note:"CPO硅光集成, 无可插拔模块, 插入损耗~4dB"}
+],
+modules:[]},
+{id:"qm2",cat:"ib-switch",name:"Quantum-2 (QM9000系列)",tags:["IB","400G"],summary:"NDR 400G InfiniBand交换机系列, 51.2Tbps",
+ib:{rates:["NDR 400G","HDR 200G","EDR 100G"],serdes:"100G-PAM4/lane",active:[0]},
+eth:null,
+specs:{"ASIC":"Quantum-2","SerDes":"100G-PAM4/lane","交换容量":"51.2Tbps","兼容OS":"NVOS (UFM / MLNX-OS)"},
+skus:[
+{model:"QM9700",opn:"-",height:"1U",cooling:"风冷",power:"AC",ports:"64×OSFP (128×400G)",note:"标准AC"},
+{model:"QM9701",opn:"-",height:"1U",cooling:"风冷",power:"48V DC",ports:"64×OSFP (128×400G)",note:"DC版"},
+{model:"QM9790",opn:"-",height:"1U",cooling:"风冷",power:"AC",ports:"64×OSFP (128×400G)",note:"无SHARP版"}
+],
+modules:[]},
+{id:"qm1",cat:"ib-switch",name:"Quantum-1 (QM8000系列)",tags:["IB","200G"],summary:"HDR 200G InfiniBand交换机, 6.4T/8.0T",
+ib:{rates:["HDR 200G","EDR 100G"],serdes:"50G-PAM4/lane",active:[0]},
+eth:null,
+specs:{"ASIC":"Quantum-1","SerDes":"50G-PAM4/lane","交换容量":"6.4T / 8.0T","兼容OS":"NVOS (UFM / MLNX-OS)"},
+skus:[
+{model:"QM8700",opn:"-",height:"1U",cooling:"风冷",power:"AC",ports:"32×QSFP56 或 40×QSFP56",note:"6.4T / 8.0T"}
+],
+modules:[]},
+{id:"sn6",cat:"eth-switch",name:"Spectrum-6 (SN6000系列)",tags:["ETH","800G"],summary:"800GbE以太网交换机系列, 102.4Tbps",
+ib:null,
+eth:{rates:["800GbE","400GbE","200GbE","100GbE"],serdes:"200G-PAM4/lane",active:[0]},
+specs:{"ASIC":"Spectrum-6","SerDes":"200G-PAM4/lane","交换容量":"102.4Tbps","兼容OS":"NVOS (UFM), Cumulus Linux, SONiC"},
+skus:[
+{model:"SN6600-LD",opn:"-",height:"2U",cooling:"液冷 4×UQD8 v2",power:"48-54VDC Busbar",ports:"64×OSFP (128×800G)",note:"液冷版"},
+{model:"SN6810-LD",opn:"-",height:"2U",cooling:"液冷 2×UQD8 v2",power:"48-54VDC Busbar",ports:"128×MMC-12 CPO (128×800G)",note:"CPO硅光, 无可插拔模块"},
+{model:"SN6800-LD",opn:"-",height:"5U",cooling:"液冷 10×UQD8 v2",power:"48-54VDC Busbar",ports:"512×MMC-12 CPO (2048×200G)",note:"4-ASIC CPO, 409.6T, multiplane"}
+],
+modules:[]},
+{id:"sn5000",cat:"eth-switch",name:"Spectrum-4 (SN5000系列)",tags:["ETH","800G"],summary:"Spectrum-4 以太网交换机系列, 51.2Tbps/25.6Tbps",
+ib:null,
+eth:{rates:["800GbE","400GbE","200GbE","100GbE","50GbE","25GbE","10GbE"],serdes:"100G-PAM4/lane",active:[0]},
+specs:{"ASIC":"Spectrum-4","SerDes":"100G-PAM4/lane","交换容量":"51.2T / 25.6T","兼容OS":"NVOS (UFM), Cumulus Linux, SONiC"},
+skus:[
+{model:"SN5610",opn:"920-9N42F-00RI-3C1",height:"2U",cooling:"风冷",power:"4×AC PSU",ports:"64×OSFP + 2×SFP28 (51.2T)",note:"C2P airflow, P-Rel"},
+{model:"SN5600",opn:"920-9N42F-00RI-7C0",height:"2U",cooling:"风冷",power:"2×AC PSU",ports:"64×OSFP + 1×SFP28 (51.2T)",note:"C2P airflow, EoL"},
+{model:"SN5600D",opn:"920-9N42F-00RI-KC0",height:"2U",cooling:"风冷",power:"48VDC Busbar",ports:"64×OSFP + 1×SFP28 (51.2T)",note:"C2P airflow, MGX mount, P-Rel"},
+{model:"SN5400",opn:"920-9N42C-00RB-7C0",height:"2U",cooling:"风冷",power:"2×AC PSU",ports:"64×QSFP-DD + 2×SFP28 (25.6T)",note:"C2P airflow, P-Rel"},
+{model:"SN5400",opn:"920-9N42C-00FB-7C0",height:"2U",cooling:"风冷",power:"2×AC PSU",ports:"64×QSFP-DD + 2×SFP28 (25.6T)",note:"P2C airflow, P-Rel"}
+],
+modules:[]},
+{id:"sn4",cat:"eth-switch",name:"Spectrum-3 (SN4000)",tags:["ETH","400G"],summary:"400GbE以太网交换机系列, 12.8Tbps",
+ib:null,
+eth:{rates:["400GbE","200GbE","100GbE","50GbE","25GbE"],serdes:"50G-PAM4/lane",active:[0]},
+specs:{"ASIC":"Spectrum-3","SerDes":"50G-PAM4/lane","交换容量":"12.8T / 6.4T","兼容OS":"NVOS (MLNX-OS), Cumulus Linux, ONIE, SONiC"},
+skus:[
+{model:"SN4700",opn:"MSN4700-WS2F/R等",height:"1U",cooling:"风冷",power:"2×AC",ports:"32×QSFP-DD (12.8T)",note:"400GbE, P2C/C2P, Onyx/Cumulus/ONIE"},
+{model:"SN4600C",opn:"MSN4600-CS2F/R等",height:"2U",cooling:"风冷",power:"2×AC",ports:"64×QSFP28 (6.4T)",note:"100GbE, P2C/C2P, Onyx/Cumulus/ONIE"},
+{model:"SN4600",opn:"MSN4600-VS2FC/RC等",height:"2U",cooling:"风冷",power:"2×AC",ports:"64×QSFP56 (6.4T)",note:"200GbE, P2C/C2P, Cumulus/ONIE"}
+],
+modules:[]},
+{id:"sn3",cat:"eth-switch",name:"Spectrum-2 (SN3000)",tags:["ETH","100G"],summary:"100GbE以太网交换机系列, 6.4Tbps",
+ib:null,
+eth:{rates:["100GbE","50GbE","25GbE"],serdes:"25G-NRZ/lane",active:[0]},
+specs:{"ASIC":"Spectrum-2","SerDes":"25G-NRZ/lane","交换容量":"6.4T / 3.2T / 2.4T","兼容OS":"NVOS (MLNX-OS), Cumulus Linux, ONIE, SONiC"},
+skus:[
+{model:"SN3700",opn:"MSN3700-VS2F/R等",height:"1U",cooling:"风冷",power:"2×AC",ports:"32×QSFP56 (6.4T)",note:"200GbE, P2C/C2P, Onyx/Cumulus/ONIE"},
+{model:"SN3700C",opn:"MSN3700-CS2F/R等",height:"1U",cooling:"风冷",power:"2×AC",ports:"32×QSFP28 (3.2T)",note:"100GbE, P2C/C2P, Onyx/Cumulus/ONIE"},
+{model:"SN3420",opn:"MSN3420-CB2F/R等",height:"1U",cooling:"风冷",power:"2×AC",ports:"48×SFP28 + 12×QSFP28 (2.4T)",note:"25/100GbE ToR, P2C/C2P, Onyx/Cumulus/ONIE"}
+],
+modules:[]},
+{id:"cx9",cat:"supernic",name:"ConnectX-9",tags:["IB","ETH","1.6T"],summary:"SuperNIC, 1.6T/800G, OSFP224/QSFP112, PCIe Gen6",
+ib:{rates:["XDR 800G","NDR 400G","HDR 200G","EDR 100G"],serdes:"200G-PAM4/lane",active:[0]},
+eth:{rates:["800GbE","400GbE","200GbE","100GbE","50GbE","25GbE"],serdes:"200G-PAM4/lane",active:[0],note:"与IB共享200G-PAM4 SerDes"},
+specs:{"总带宽":"800G (1.6T双口)","Host":"PCIe Gen6 x16","形态":"1P OSFP224 / 2P QSFP112"},
+skus:[
+{model:"C9180",opn:"900-9X91E-00EB-ST0等",height:"-",cooling:"风冷",power:"PCIe Gen6 x16",ports:"1×OSFP224, XDR 800G/800GbE",note:"Socket-Direct, IB XDR/NDR/HDR"},
+{model:"C9180",opn:"900-9X91E-00EB-DT0",height:"-",cooling:"风冷",power:"PCIe Gen6 x16",ports:"1×OSFP224, XDR 800G/800GbE",note:"DSP option, MCIO root complex for GPU/SSD"},
+{model:"C9240",opn:"900-9X91Q-00CN-ST0等",height:"-",cooling:"风冷",power:"PCIe Gen6 x16",ports:"2×QSFP112, NDR 400G/400GbE",note:"Socket-Direct, IB XDR/NDR/HDR"}
+],
+modules:[]},
+{id:"cx8",cat:"supernic",name:"ConnectX-8",tags:["IB","ETH","800G"],summary:"SuperNIC, 800G, OSFP/QSFP112, PCIe Gen6",
+ib:{rates:["XDR 800G","NDR 400G","HDR 200G","EDR 100G"],serdes:"200G-PAM4/lane",active:[0],note:"IB最高800G (200G/lane)"},
+eth:{rates:["400GbE","200GbE","100GbE","50GbE","25GbE"],serdes:"100G-PAM4/lane",active:[0],note:"ETH最高400G (100G/lane), 低于IB"},
+specs:{"总带宽":"800 Gb/s","Host":"PCIe Gen6 x16","形态":"1P OSFP / 2P QSFP112"},
+skus:[
+{model:"C8180",opn:"900-9X81E-00EX-ST0等",height:"-",cooling:"风冷",power:"PCIe Gen6 x16",ports:"1×OSFP, XDR 800G/400GbE",note:"Socket-Direct/Multi-Host, IB XDR/NDR/HDR"},
+{model:"C8180L",opn:"900-9X81E-00EX-DT0等",height:"-",cooling:"风冷",power:"PCIe Gen6 x16",ports:"1×OSFP, XDR 800G/400GbE",note:"Socket-Direct/Multi-Host, IB XDR/NDR/HDR"},
+{model:"C8240",opn:"900-9X81Q-00CN-ST0等",height:"-",cooling:"风冷",power:"PCIe Gen6 x16",ports:"2×QSFP112, NDR 400G/400GbE",note:"DSP option, MCIO root complex, IB XDR/NDR/HDR"}
+],
+modules:[]},
+{id:"cx7",cat:"supernic",name:"ConnectX-7",tags:["IB","ETH","400G"],summary:"400G SuperNIC, PCIe Gen4/5, IB+ETH双模",
+ib:{rates:["NDR 400G","HDR 200G","EDR 100G"],serdes:"100G-PAM4/lane",active:[0]},
+eth:{rates:["400GbE","200GbE","100GbE","50GbE","25GbE","10GbE"],serdes:"100G-PAM4/lane",active:[0]},
+specs:{"总带宽":"400 Gb/s","Host":"PCIe Gen5 x16","形态":"HHHL/FHHL, Socket Direct"},
+skus:[
+{model:"MCX75310AAS-NEAT",opn:"900-9X766-003N-SQ01",height:"HHHL",cooling:"风冷",power:"PCIe x16",ports:"1×OSFP, NDR 400G/400GbE",note:"Secure Boot, 无Crypto"},
+{model:"MCX75310AAC-NEAT",opn:"900-9X766-003N-SR0",height:"HHHL",cooling:"风冷",power:"PCIe x16",ports:"1×OSFP, NDR 400G/400GbE",note:"Secure Boot + Crypto"},
+{model:"MCX75310AAS-HEAT",opn:"900-9X766-003N-ST02",height:"HHHL",cooling:"风冷",power:"PCIe x16",ports:"1×OSFP, NDR200 200G/200GbE",note:"Secure Boot, 无Crypto"},
+{model:"MCX713104AC-ADAT",opn:"900-9X7AO-00C3-STZ",height:"HHHL",cooling:"风冷",power:"PCIe Gen4 x16",ports:"4×SFP56, 50/25GbE",note:"ETH only, Secure Boot + Crypto"},
+{model:"MCX713104AS-ADAT",opn:"900-9X7AO-0003-ST0",height:"HHHL",cooling:"风冷",power:"PCIe Gen4 x16",ports:"4×SFP56, 50/25GbE",note:"ETH only, Secure Boot, 无Crypto"},
+{model:"MCX713114TC-GEAT",opn:"900-9X7AH-004N-CT0",height:"FHHL",cooling:"风冷",power:"PCIe Gen4 x16",ports:"4×SFP56, 50/25GbE",note:"Telco, PPS/SMAs/SyncE, Crypto"},
+{model:"MCX715105AS-WEAT1",opn:"900-9X7AH-0039-STZ1",height:"HHHL",cooling:"风冷",power:"PCIe x16+Socket Direct",ports:"1×QSFP112, NDR 400G/400GbE",note:"Socket Direct Ready, Secure Boot"},
+{model:"MCX755106AS-HEAT",opn:"900-9X7AH-0078-DTZ",height:"HHHL",cooling:"风冷",power:"PCIe x16+Socket Direct",ports:"2×QSFP112, NDR200 200G/200GbE",note:"Socket Direct Ready, Secure Boot"},
+{model:"MCX755106AC-HEAT",opn:"900-9X7AH-0079-DTZ",height:"HHHL",cooling:"风冷",power:"PCIe x16+Socket Direct",ports:"2×QSFP112, NDR200 200G/200GbE",note:"Socket Direct Ready, Secure Boot + Crypto"}
+],
+modules:[]},
+{id:"bf4",cat:"supernic",name:"BlueField-4",tags:["ETH","800G","DPU"],summary:"800G DPU, 2×400G OSFP, 64核Arm V2, PCIe Gen6",
+ib:{rates:["XDR 800G","NDR 400G","HDR 200G","EDR 100G"],serdes:"200G-PAM4/lane",active:[0],note:"集成ConnectX-9"},
+eth:{rates:["800GbE","400GbE","200GbE","100GbE","50GbE","25GbE"],serdes:"200G-PAM4/lane",active:[0]},
+specs:{"网络带宽":"800 Gb/s","Arm核":"64×Neoverse V2, 114MB L3","内存":"128GB LPDDR5x + 512GB SSD","Host":"PCIe 6.0 x16 (服务器) / PCIe 5.0 x32 (自托管)","安全":"ASTRA, IPsec/TLS/PSP, 实时威胁检测","存储":"NVMe-oF, S3 over RDMA, NVMe/TCP"},
+modules:[]},
+{id:"bf3",cat:"supernic",name:"BlueField-3",tags:["ETH","400G","DPU"],summary:"400G DPU/SuperNIC, 16/8核Arm, PCIe Gen5",
+ib:{rates:["NDR 400G","HDR 200G","EDR 100G"],serdes:"100G-PAM4/lane",active:[0],note:"集成ConnectX-7"},
+eth:{rates:["400GbE","200GbE","100GbE","50GbE","25GbE"],serdes:"100G-PAM4/lane",active:[0]},
+specs:{"网络带宽":"400 Gb/s","Host":"PCIe 5.0 x16","安全":"IPsec/TLS/MACsec/PSP, PKA, TRNG","存储":"NVMe-oF, NVMe/TCP, BlueField SNAP"},
+skus:[
+{model:"B3240",opn:"900-9D3B6-00CN-AB0等",height:"Dual-Slot FHHL",cooling:"风冷",power:"x16+Ext",ports:"2×QSFP112, NDR 400G/400GbE",note:"P-Series 16核, 32GB DDR5, Crypto, BMC"},
+{model:"B3240",opn:"900-9D3B6-00CN-PA0",height:"Single-Slot FHHL",cooling:"风冷",power:"x16+Ext",ports:"2×QSFP112, NDR 400G/400GbE",note:"P-Series 16核, 32GB, 冷通道服务器专用"},
+{model:"B3220",opn:"900-9D3B6-00CV-AA0等",height:"Single-Slot FHHL",cooling:"风冷",power:"x16+Ext",ports:"2×QSFP112, NDR200 200G/200GbE",note:"P-Series 16核, 32GB DDR5, Crypto, BMC"},
+{model:"B3210E",opn:"900-9D3B6-00CC-EA0等",height:"Single-Slot FHHL",cooling:"风冷",power:"x16+Ext",ports:"2×QSFP112, HDR100 100G/100GbE",note:"E-Series 16核, 32GB DDR5, Crypto, BMC"},
+{model:"B3220L",opn:"900-9D3B4-00CV-EA0等",height:"Single-Slot FHHL",cooling:"风冷",power:"x16",ports:"2×QSFP112, NDR200 200G/200GbE",note:"SuperNIC, E-Series 8核, 16GB, Crypto"},
+{model:"B3210L",opn:"900-9D3B4-00CC-EA0等",height:"Single-Slot FHHL",cooling:"风冷",power:"x16",ports:"2×QSFP112, HDR100 100G/100GbE",note:"SuperNIC, E-Series 8核, 16GB, Crypto"},
+{model:"B3140H",opn:"900-9D3D4-00EN-HA0等",height:"Single-Slot HHHL",cooling:"风冷",power:"x16",ports:"1×QSFP112, NDR 400G/400GbE",note:"SuperNIC, E-Series 8核, 16GB, Crypto"}
+],
+modules:[]}
+];
+
+const MOD_APP={
+"MMS4A00":"Used in Quantum-3 air-cooled and liquid-cooled switch",
+"MMS4C10":"IHS: Quantum-3, air-cooled Spectrum-6; RHS: Quantum-3, liquid-cooled Spectrum-6, Vera Rubin NVL72 (IB XDR)",
+"MMS4C11":"IHS: Quantum-3, air-cooled Spectrum-6; RHS: Quantum-3, liquid-cooled Spectrum-6, Vera Rubin NVL72 (ETH 800GbE)",
+"MMS4X00-NM":"Quantum-2 or Spectrum-4 air-cooled switches (switch-to-switch, 100-500m)",
+"MMS4X00-NM-FLT":"DGX-H100 systems to switches (flat top)",
+"MMS4X00-NM-HGX":"Rubin NVL8 to Spectrum-4/Spectrum-5 switches",
+"MMS4X50-NM":"Quantum-2 or Spectrum-4 air-cooled switches (switch-to-switch, 2km)",
+"MMS4X90-NR":"Spectrum-4 switches (switch-to-switch, up to 10km)",
+"MMS4X00-NS":"Quantum-2/Spectrum-4 switches, DGX-H100, ConnectX-7, BlueField-3 (100m)",
+"MMS4X00-NS-T":"Spectrum-4 air-cooled switches (ETH only, 100m)",
+"MMS4X00-NM-T":"Spectrum-4 air-cooled switches (ETH only, 500m)",
+"MMA4Z00-NS-T":"Spectrum-4 switches (ETH only, 50m MM)",
+"MMS4A20":"ConnectX-8 cards with Quantum-X800 QM3x00 switches",
+"MMS4X00-NM16":"Spectrum-4 air-cooled switches (MPO16, ETH only)",
+"MMA4Z00-NS400":"ConnectX-7/OSFP adapters to twin-port transceivers in 2x400G IB/ETH switches",
+"MMA4Z00-NS400-T":"ConnectX-7/OSFP adapters to twin-port transceivers in 2x400G ETH switches",
+"MMS4X00-NS400":"ConnectX-7/OSFP adapters to twin-port transceivers in 2x400G IB/ETH switches",
+"MMA1Z00-NS400":"ConnectX-7/QSFP112 or BlueField-3/QSFP112 to twin-port in 2x400G IB/ETH switches",
+"MMA1Z00-NS400-T":"ConnectX-7/QSFP112 to twin-port in 2x400G ETH switches",
+"MMS1X00-NS400":"ConnectX-7/QSFP112 or BlueField-3/QSFP112 to twin-port in 2x400G IB/ETH switches (FR4 500m)",
+"MMS1V00-WM":"400GbE links on QSFP-DD host (DR4 500m SM)",
+"MMA1T00-HS":"InfiniBand HDR and EDR links",
+"MMA1T00-VS":"200GbE Ethernet links (backward compatible 100GbE)",
+"MMS1W50-HM":"200Gb/s FR4 InfiniBand HDR links",
+"MMA1B00-E100":"100GbE/IB EDR links (SR4 100m MM)",
+"MMA1B00-C100D":"100GbE links (SR4 100m MM)",
+"MMA1L10-CR":"100GBASE-LR4/40GBASE-LR4 Ethernet, IB EDR end-to-end",
+"MMA1L30-CM":"100G Ethernet (CWDM4), IB EDR end-to-end",
+"MMS1V70-CM":"4x MMS1V70-CM on MSN2700 to single MMS1V00-WM on MSN4700",
+"MCA4K00":"1.6T RHS NVL5 switch-to-switch, 800G RHS HCA-to-HCA",
+"MCA4K50":"1.6T XDR switch-to-switch",
+"MCA7K10":"1.6G Quantum-X800 switch to 2x800G ConnectX-8 adapters (IHS→RHS)",
+"MFA7U40-H00X":"200G HDR100 Splitter AOC (switch-to-2x100G adapters)",
+"MMA2L20-AR":"25GBASE-LR Ethernet (10km SM, backward compatible 10G)",
+"MMA2P00-AS":"25GBASE-SR Ethernet (100m MM)",
+"MCP4Y10-Nxxx":"2x400G Quantum-2/Spectrum-4 switch-to-switch, switch-to-DGX-H100",
+"MCP7Y00-Nxxx":"Quantum-2/Spectrum-4 switch-to-two 400G ConnectX-7 OSFP adapters",
+"MCP7Y10-Nxxx":"2x400G Quantum-2/Spectrum-4 switch-to-two 400G QSFP112 ConnectX-7/BF3",
+"MCA7J60-Nxxx":"Quantum-2/Spectrum-4 switch-to-two 400G ConnectX-7 OSFP adapters (ACC)",
+"MCA7J65-Nxxx":"Quantum-2 switch-to-two 400G QSFP112 BF3 DPUs (ACC, 4-5m)",
+"MCA7J70-Nxxx":"Quantum-2/Spectrum-4 switch-to-four 200G ConnectX-7 OSFP adapters (ACC)",
+"MCA7J75-Nxxx":"Quantum-2/Spectrum-4 switch-to-four 200G QSFP112 adapters (ACC)",
+"MCA4J80-Nxxx":"2x400G Quantum-2/Spectrum-4 switch-to-switch, switch-to-DGX-H100 (IB ACC)",
+"MCP7Y60-Hxxx":"2x200G Quantum-2/Spectrum-4 switch-to-two 200G switches (Splitter DAC)",
+"MCP7Y70-Hxxx":"2x200G Quantum-2/Spectrum-4 switch-to-four 100G switches (Splitter DAC)",
+"MFA7U10-H00x":"400G HDR Splitter AOC (switch-to-2x200G adapters)",
+"MCP1650-H0xxEyy":"200G HDR DAC (switch-to-switch, 1-2.5m)",
+"MCP7H50-H0xxRyy":"200G Splitter DAC (1 port→2x100G, 1-3m)",
+"MFS1S00-HxxxV":"200G HDR/200GbE AOC (switch-to-switch, 3-100m)",
+"MFS1S50-H0xxV":"200G Low Latency Splitter AOC (switch-to-2x100G, 3-100m)",
+"MCP1600-E0xxEyy":"100G IB EDR/ETH DAC (switch-to-switch, 1-5m)",
+"MCP1600-C0xxEyyz":"100GbE DAC (switch-to-switch, 1-5m)",
+"MFA1A00-xxxx":"100G IB EDR/ETH AOC (switch-to-switch, 3-100m)"
+};
+const CATALOG=[
+{cat:"1.6t",group:"1.6T XDR 光模块 (OSFP224)",items:[
+{pn:"MMS4A00",rate:"1.6T (2xDR4)",fiber:"SM",wl:"1310nm",dist:"500m",conn:"2×MPO-12/APC",pwr:"33.5W",temp:"20~70°C",proto:"IB XDR",form:"OSFP224",top:"finned top",color:"-",note:"IHS (switch), CMIS 4.0"},
+{pn:"MMS4C10",rate:"1.6T (2xDR4)",fiber:"SM",wl:"1310nm",dist:"500m",conn:"2×MPO-12/APC",pwr:"27W",temp:"20~70°C",proto:"IB XDR",form:"OSFP224",top:"finned/flat top",color:"-",note:"Gen2 FRO, IHS/RHS, CMIS 5.0"},
+{pn:"MMS4C11",rate:"1.6T (2xDR4)",fiber:"SM",wl:"1310nm",dist:"500m",conn:"2×MPO-12/APC",pwr:"27W",temp:"20~70°C",proto:"ETH",form:"OSFP224",top:"finned/flat top",color:"-",note:"Gen2 FRO, IHS/RHS, 800GbE, CMIS 5.0"}
+]},
+{cat:"800g",group:"800G XDR 光模块 (OSFP, 200G-PAM4/lane)",items:[
+{pn:"MMS4A20",rate:"800G (DR4)",fiber:"SM",wl:"1310nm",dist:"500m",conn:"1×MPO-12/APC",pwr:"18W",temp:"0~70°C",proto:"IB XDR",form:"OSFP",top:"flat top",color:"-",note:"Single-port RHS, CMIS 4.0"}
+]},
+{cat:"800g",group:"800G NDR 光模块 (OSFP, 100G-PAM4/lane)",items:[
+{pn:"MMS4X00-NM",rate:"800G (2xDR4)",fiber:"SM",wl:"1310nm",dist:"500m",conn:"2×MPO-12/APC",pwr:"17W",temp:"0~70°C",proto:"IB NDR / ETH",form:"OSFP",top:"finned top",color:"purple tab",note:"CMIS 4.0"},
+{pn:"MMS4X00-NM-FLT",rate:"800G (2xDR4)",fiber:"SM",wl:"1310nm",dist:"500m",conn:"2×MPO-12/APC",pwr:"17W",temp:"0~70°C",proto:"IB NDR / ETH",form:"OSFP",top:"flat top",color:"purple tab",note:"DGX/H100, 没有独立页面(在MMS4X00-NM主页里有简介), CMIS 4.0"},
+{pn:"MMS4X00-NM-HGX",rate:"800G (2xDR4)",fiber:"SM",wl:"1310nm",dist:"500m",conn:"2×MPO-12/APC",pwr:"15W",temp:"0~70°C",proto:"ETH",form:"OSFP",top:"flat top",color:"-",note:"Rubin NVL8 only, CMIS 4.0+"},
+{pn:"MMS4X50-NM",rate:"800G (2xFR4)",fiber:"SM",wl:"CWDM4 EML",dist:"2km",conn:"2×LC Duplex",pwr:"17W",temp:"0~70°C",proto:"IB NDR / ETH",form:"OSFP",top:"finned top",color:"bright green tab",note:"CMIS 5.0"},
+{pn:"MMS4X90-NR",rate:"800G (2xLR4)",fiber:"SM",wl:"CWDM4 EML",dist:"10km",conn:"2×LC Duplex",pwr:"17W",temp:"0~70°C",proto:"ETH",form:"OSFP",top:"finned top",color:"-",note:"CMIS 5.0"},
+{pn:"MMS4X00-NS",rate:"800G (2xDR4)",fiber:"SM",wl:"1310nm",dist:"100m",conn:"2×MPO-12/APC",pwr:"17W",temp:"0~70°C",proto:"IB NDR / ETH",form:"OSFP",top:"finned/flat top",color:"white stripe",note:"CMIS 4.0"},
+{pn:"MMS4X00-NS-T",rate:"800G (2xDR4)",fiber:"SM",wl:"1310nm",dist:"100m",conn:"2×MPO-12/APC",pwr:"17W",temp:"0~70°C",proto:"ETH",form:"OSFP",top:"finned top",color:"-",note:"ETH only, CMIS 4.0"},
+{pn:"MMS4X00-NM-T",rate:"800G (2xDR4)",fiber:"SM",wl:"1310nm",dist:"500m",conn:"2×MPO-12/APC",pwr:"17W",temp:"0~70°C",proto:"ETH",form:"OSFP",top:"open/closed top",color:"-",note:"ETH only, CMIS 4.0"},
+{pn:"MMA4Z00-NS-T",rate:"800G (2xSR4)",fiber:"MM",wl:"850nm VCSEL",dist:"50m",conn:"2×MPO-12/APC",pwr:"17W",temp:"0~70°C",proto:"ETH",form:"OSFP",top:"finned top",color:"blue tab",note:"CMIS 4.0"},
+{pn:"MMS4X00-NM16",rate:"800G (DR8)",fiber:"SM",wl:"1310nm",dist:"500m",conn:"1×MPO-16/APC",pwr:"17W",temp:"0~70°C",proto:"ETH",form:"OSFP",top:"finned top",color:"-",note:"MPO16, 8ch parallel, ETH only"}
+]},
+{cat:"400g",group:"400G 光模块 (OSFP/QSFP112/QSFP-DD)",items:[
+{pn:"MMA4Z00-NS400",rate:"400G SR4",fiber:"MM",wl:"850nm VCSEL",dist:"50m",conn:"MPO-12/APC",pwr:"8.5W",temp:"0~70°C",proto:"IB NDR / ETH",form:"OSFP",top:"flat top",color:"-",note:"CMIS 4.0"},
+{pn:"MMA4Z00-NS400-T",rate:"400G SR4",fiber:"MM",wl:"850nm VCSEL",dist:"50m",conn:"MPO-12/APC",pwr:"8.5W",temp:"0~70°C",proto:"ETH",form:"OSFP",top:"flat top",color:"-",note:"ETH only, CMIS 4.0"},
+{pn:"MMS4X00-NS400",rate:"400G DR4",fiber:"SM",wl:"1310nm EML",dist:"100m",conn:"MPO-12/APC",pwr:"9W",temp:"0~70°C",proto:"IB NDR / ETH",form:"OSFP",top:"flat top",color:"-",note:"CMIS 4.0"},
+{pn:"MMA1Z00-NS400",rate:"400G SR4",fiber:"MM",wl:"850nm VCSEL",dist:"50m",conn:"MPO-12/APC",pwr:"9W",temp:"0~70°C",proto:"IB NDR / ETH",form:"QSFP112",top:"",color:"-",note:"CMIS 4.0"},
+{pn:"MMA1Z00-NS400-T",rate:"400G SR4",fiber:"MM",wl:"850nm VCSEL",dist:"50m",conn:"MPO-12/APC",pwr:"8.5W",temp:"0~70°C",proto:"ETH",form:"QSFP112",top:"",color:"-",note:"ETH only, CMIS 4.0"},
+{pn:"MMS1X00-NS400",rate:"400G FR4",fiber:"SM",wl:"1310nm EML",dist:"500m",conn:"MPO-12/APC",pwr:"9.5W",temp:"0~70°C",proto:"IB NDR / ETH",form:"QSFP112",top:"",color:"-",note:"CMIS 4.0"},
+{pn:"MMS1V00-WM",rate:"400G DR4",fiber:"SM",wl:"1310nm",dist:"500m",conn:"MPO-12",pwr:"12W",temp:"0~70°C",proto:"ETH",form:"QSFP-DD",top:"-",color:"-",note:"CMIS 4.0"},
+{pn:"NCP4SI4N",rate:"400G FR4",fiber:"SM",wl:"1310nm",dist:"2km",conn:"-",pwr:"-",temp:"-",proto:"IB NDR / ETH",form:"on-board",top:"-",color:"-",note:"ConnectX-7, non-pluggable"},
+{pn:"NCP4SI4M",rate:"400G DR4",fiber:"SM",wl:"1310nm",dist:"500m",conn:"-",pwr:"-",temp:"-",proto:"IB NDR / ETH",form:"on-board",top:"-",color:"-",note:"ConnectX-7, non-pluggable"},
+{pn:"NCP4SI6N",rate:"400G SR8",fiber:"MM",wl:"850nm",dist:"100m",conn:"-",pwr:"-",temp:"-",proto:"ETH",form:"on-board",top:"-",color:"-",note:"ConnectX-7, non-pluggable"}
+]},
+{cat:"200g",group:"200G 光模块 (QSFP56)",items:[
+{pn:"MMA1T00-HS",rate:"200G SR4",fiber:"MM",wl:"850nm VCSEL",dist:"100m",conn:"MPO-12 UPC",pwr:"4.35W",temp:"0~70°C",proto:"IB HDR",form:"QSFP56",top:"-",color:"-",note:"SFF-8636"},
+{pn:"MMA1T00-VS",rate:"200G SR4",fiber:"MM",wl:"850nm VCSEL",dist:"100m",conn:"MPO-12 UPC",pwr:"4.35W",temp:"0~70°C",proto:"ETH",form:"QSFP56",top:"-",color:"-",note:"200GbE, SFF-8636"},
+{pn:"MMS1W50-HM",rate:"200G FR4",fiber:"SM",wl:"1310nm CWDM",dist:"2km",conn:"LC Duplex UPC",pwr:"5.5W",temp:"0~70°C",proto:"IB HDR / ETH",form:"QSFP56",top:"-",color:"-",note:"CMIS 4.04"},
+{pn:"NCP2SI2N",rate:"200G×2 FR4",fiber:"SM",wl:"-",dist:"2km",conn:"-",pwr:"-",temp:"-",proto:"IB HDR / ETH",form:"on-board",top:"-",color:"-",note:"ConnectX-7, non-pluggable"},
+{pn:"NCP2SI2M",rate:"200G×2 SR4",fiber:"MM",wl:"-",dist:"100m",conn:"-",pwr:"-",temp:"-",proto:"ETH",form:"on-board",top:"-",color:"-",note:"ConnectX-7, non-pluggable"}
+]},
+{cat:"100g",group:"100G 光模块 (QSFP28)",items:[
+{pn:"MMA1B00-E100",rate:"100G SR4",fiber:"MM",wl:"850nm VCSEL",dist:"100m",conn:"MPO",pwr:"Class 3",temp:"0~70°C",proto:"IB EDR / ETH",form:"QSFP28",top:"-",color:"-",note:"SFF-8636"},
+{pn:"MMA1B00-C100D",rate:"100G SR4",fiber:"MM",wl:"850nm VCSEL",dist:"100m",conn:"MPO UPC",pwr:"2.5W",temp:"0~70°C",proto:"ETH",form:"QSFP28",top:"-",color:"-",note:"100GbE, SFF-8636"},
+{pn:"MMA1L10-CR",rate:"100G LR4",fiber:"SM",wl:"LAN-WDM",dist:"10km",conn:"LC Duplex UPC",pwr:"3.5W",temp:"0~70°C",proto:"ETH+IB EDR",form:"QSFP28",top:"-",color:"-",note:"SFF-8636"},
+{pn:"MMA1L30-CM",rate:"100G CWDM4",fiber:"SM",wl:"1310nm CWDM",dist:"2km",conn:"LC Duplex UPC",pwr:"3.5W",temp:"0~70°C",proto:"ETH+IB EDR",form:"QSFP28",top:"-",color:"-",note:"SFF-8636"},
+{pn:"MMS1V70-CM",rate:"100G DR1",fiber:"SM",wl:"1310nm",dist:"500m",conn:"LC Duplex",pwr:"4W",temp:"0~70°C",proto:"ETH",form:"QSFP28",top:"-",color:"-",note:"SFF-8636"}
+]},
+{cat:"100g",group:"25G 光模块 (SFP28)",items:[
+{pn:"MMA2L20-AR",rate:"25G LR",fiber:"SM",wl:"1310nm",dist:"10km",conn:"LC Duplex",pwr:"-",temp:"-",proto:"ETH",form:"SFP28",top:"-",color:"-",note:"25GbE LR"},
+{pn:"MMA2P00-AS",rate:"25G SR",fiber:"MM",wl:"850nm",dist:"100m",conn:"LC Duplex",pwr:"-",temp:"-",proto:"ETH",form:"SFP28",top:"-",color:"-",note:"25GbE SR"}
+]},
+{cat:"cable",group:"1.6T 线缆 (OSFP224)",items:[
+{pn:"MCA4K00",rate:"1.6T",fiber:"ACC",wl:"-",dist:"≤2m",conn:"1.6G→1.6G OSFP",pwr:"-",temp:"-",proto:"IB XDR",form:"OSFP224",top:"RHS",color:"-",note:"Active Copper Cable"},
+{pn:"MCA4K50",rate:"1.6T",fiber:"ACC",wl:"-",dist:"≤2m",conn:"1.6G→1.6G OSFP",pwr:"-",temp:"-",proto:"IB XDR",form:"OSFP224",top:"IHS to RHS",color:"-",note:"Active Copper Cable"},
+{pn:"MCA7K10",rate:"1.6T",fiber:"ACC",wl:"-",dist:"≤2m",conn:"1.6G→2×800G OSFP IHS→RHS",pwr:"-",temp:"-",proto:"IB XDR",form:"OSFP224",top:"-",color:"-",note:"Splitter ACC"}
+]},
+{cat:"cable",group:"800G 线缆 (OSFP)",items:[
+{pn:"MCP4Y10-Nxxx",rate:"2×400G",fiber:"DAC",wl:"-",dist:"1-3m",conn:"2×400G OSFP",pwr:"-",temp:"-",proto:"IB NDR / ETH",form:"OSFP",top:"-",color:"-",note:"Passive DAC"},
+{pn:"MCP7Y00-Nxxx",rate:"800G",fiber:"DAC",wl:"-",dist:"1-3m",conn:"2×400G OSFP",pwr:"-",temp:"-",proto:"IB NDR / ETH",form:"OSFP",top:"-",color:"-",note:"Splitter DAC"},
+{pn:"MCP7Y10-Nxxx",rate:"800G",fiber:"DAC",wl:"-",dist:"1-3m",conn:"2×400G QSFP112",pwr:"-",temp:"-",proto:"IB NDR / ETH",form:"QSFP112",top:"-",color:"-",note:"Splitter DAC"},
+{pn:"MCA7J60-Nxxx",rate:"800G",fiber:"ACC",wl:"-",dist:"≤3m",conn:"2×400G OSFP",pwr:"-",temp:"-",proto:"IB NDR / ETH",form:"OSFP",top:"-",color:"-",note:"Splitter ACC"},
+{pn:"MCA7J65-Nxxx",rate:"800G",fiber:"ACC",wl:"-",dist:"≤3m",conn:"2×400G QSFP112",pwr:"-",temp:"-",proto:"IB NDR / ETH",form:"QSFP112",top:"-",color:"-",note:"Splitter ACC"},
+{pn:"MCA7J70-Nxxx",rate:"800G",fiber:"ACC",wl:"-",dist:"≤3m",conn:"4×200G OSFP",pwr:"-",temp:"-",proto:"ETH",form:"OSFP",top:"-",color:"-",note:"Splitter ACC"},
+{pn:"MCA7J75-Nxxx",rate:"800G",fiber:"ACC",wl:"-",dist:"≤3m",conn:"4×200G QSFP112",pwr:"-",temp:"-",proto:"ETH",form:"QSFP112",top:"-",color:"-",note:"Splitter ACC"},
+{pn:"MCA4J80-Nxxx",rate:"800G",fiber:"ACC",wl:"-",dist:"≤3m",conn:"2×400G OSFP",pwr:"-",temp:"-",proto:"IB NDR",form:"OSFP",top:"-",color:"-",note:"IB ACC"}
+]},
+{cat:"cable",group:"400G 线缆 (OSFP)",items:[
+{pn:"MCP7Y60-Hxxx",rate:"400G",fiber:"DAC",wl:"-",dist:"1-3m",conn:"2×200G QSFP56",pwr:"-",temp:"-",proto:"IB HDR / ETH",form:"OSFP",top:"-",color:"-",note:"Splitter DAC"},
+{pn:"MCP7Y70-Hxxx",rate:"400G",fiber:"DAC",wl:"-",dist:"1-3m",conn:"4×100G QSFP56",pwr:"-",temp:"-",proto:"IB HDR / ETH",form:"OSFP",top:"-",color:"-",note:"Splitter DAC"},
+{pn:"MFA7U10-H00x",rate:"400G",fiber:"AOC",wl:"-",dist:"3-100m",conn:"2×200G QSFP56",pwr:"-",temp:"-",proto:"IB HDR",form:"OSFP",top:"-",color:"-",note:"HDR Splitter AOC"}
+]},
+{cat:"cable",group:"200G 线缆 (QSFP56)",items:[
+{pn:"MCP1650-H0xxEyy",rate:"200G",fiber:"DAC",wl:"-",dist:"1-2.5m",conn:"-",pwr:"-",temp:"-",proto:"IB HDR / ETH",form:"QSFP56",top:"-",color:"-",note:"直连DAC"},
+{pn:"MCP7H50-H0xxRyy",rate:"200G",fiber:"DAC",wl:"-",dist:"1-3m",conn:"2×100G QSFP56",pwr:"-",temp:"-",proto:"IB HDR / ETH",form:"QSFP56",top:"-",color:"-",note:"Splitter DAC"},
+{pn:"MFS1S00-HxxxV",rate:"200G",fiber:"AOC",wl:"-",dist:"3-100m",conn:"-",pwr:"-",temp:"-",proto:"IB HDR / ETH",form:"QSFP56",top:"-",color:"-",note:"直连AOC"},
+{pn:"MFS1S50-H0xxV",rate:"200G",fiber:"AOC",wl:"-",dist:"3-100m",conn:"2×100G QSFP56",pwr:"-",temp:"-",proto:"IB HDR / ETH",form:"QSFP56",top:"-",color:"-",note:"Low Latency AOC"},
+{pn:"MFA7U40-H00X",rate:"200G",fiber:"AOC",wl:"-",dist:"3-100m",conn:"2×100G QSFP56",pwr:"-",temp:"-",proto:"IB HDR100 / ETH",form:"QSFP56",top:"-",color:"-",note:"HDR100 Splitter AOC"}
+]},
+{cat:"cable",group:"100G 线缆 (QSFP28)",items:[
+{pn:"MCP1600-E0xxEyy",rate:"100G",fiber:"DAC",wl:"-",dist:"1-5m",conn:"-",pwr:"-",temp:"-",proto:"IB EDR / ETH",form:"QSFP28",top:"-",color:"-",note:"直连DAC"},
+{pn:"MCP1600-C0xxEyyz",rate:"100G",fiber:"DAC",wl:"-",dist:"1-5m",conn:"-",pwr:"-",temp:"-",proto:"ETH",form:"QSFP28",top:"-",color:"-",note:"100GbE DAC"},
+{pn:"MFA1A00-xxxx",rate:"100G",fiber:"AOC",wl:"-",dist:"3-100m",conn:"-",pwr:"-",temp:"-",proto:"IB EDR / ETH",form:"QSFP28",top:"-",color:"-",note:"直连AOC"}
+]}
+];
+
+const catNames={"ib-switch":"InfiniBand 交换机","eth-switch":"Ethernet 交换机","supernic":"SuperNIC / DPU"};
+const catIcons={"ib-switch":"&#x1F5A7;","eth-switch":"&#x1F310;","supernic":"&#x1F4BB;"};
+const catOrder=["ib-switch","eth-switch","supernic"];
+const catalogCatNames={"1.6t":"1.6T","800g":"800G","400g":"400G","200g":"200G","100g":"100G","cable":"线缆 DAC/AOC"};
+
+function protoBadges(p){return p.split("/").map(x=>x.trim()).map(x=>x.startsWith("IB")?`<span class="badge-ib">${x}</span>`:`<span class="badge-eth">${x}</span>`).join(" ")}
+
+function renderRateBox(d){
+let h='<div class="rate-box">';
+if(d.ib){
+h+=`<div class="rate-section"><div class="rate-title"><span class="badge-ib">IB</span> InfiniBand</div><div class="rate-list">`;
+d.ib.rates.forEach((r,i)=>{h+=`<span class="rate-chip${d.ib.active.includes(i)?' active':''}">${r}</span>`});
+h+=`</div><div class="rate-note">SerDes: ${d.ib.serdes}</div>`;
+if(d.ib.note)h+=`<div class="rate-note">${d.ib.note}</div>`;
+h+='</div>'}
+if(d.eth){
+h+=`<div class="rate-section"><div class="rate-title"><span class="badge-eth">ETH</span> Ethernet</div><div class="rate-list">`;
+d.eth.rates.forEach((r,i)=>{h+=`<span class="rate-chip${d.eth.active.includes(i)?' active':''}">${r}</span>`});
+h+=`</div><div class="rate-note">SerDes: ${d.eth.serdes}</div>`;
+if(d.eth.note)h+=`<div class="rate-note">${d.eth.note}</div>`;
+h+='</div>'}
+h+='</div>';return h}
+
+function renderCard(d){
+const specHtml=Object.entries(d.specs).map(([k,v])=>`<div class="spec-item"><span class="label">${k}</span><span class="value">${v}</span></div>`).join("");
+const skuHtml=d.skus?`<div style="margin:.4rem 0"><div style="font-weight:600;font-size:.85rem;margin-bottom:.2rem">具体型号</div><table class="mod-table"><thead><tr><th>型号</th><th>OPN</th><th>高度</th><th>冷却</th><th>电源</th><th>端口</th><th>备注</th></tr></thead><tbody>${d.skus.map(s=>`<tr><td class="pn" onclick="copyPN(this,'${s.model}')" title="点击复制">${s.model}</td><td class="pn" onclick="copyPN(this,'${s.opn}')" title="点击复制">${s.opn}</td><td>${s.height}</td><td>${s.cooling}</td><td>${s.power}</td><td>${s.ports}</td><td>${s.note}</td></tr>`).join("")}</tbody></table></div>`:"";
+const modHtml=d.modules.length?`<table class="mod-table"><thead><tr><th>LinkX 型号</th><th>速率</th><th>距离</th><th>协议</th><th>备注</th></tr></thead><tbody>${d.modules.map(m=>{const mLink=MOD_URL[m.pn]?`<a class="doc-link" href="${MOD_URL[m.pn]}" target="_blank" title="官方文档">&#x1F517;</a>`:"";return`<tr><td class="pn" onclick="showModule('${m.pn}',${JSON.stringify(m.detail||{}).replace(/"/g,'&quot;')})">${m.pn}${mLink}</td><td>${m.rate}</td><td>${m.dist}</td><td>${protoBadges(m.proto)}</td><td>${m.note}</td></tr>`}).join("")}</tbody></table>`:"";
+const tagHtml=d.tags.map(t=>t==="IB"?`<span class="tag" style="background:var(--ib)">IB</span>`:t==="ETH"?`<span class="tag" style="background:var(--eth)">ETH</span>`:t==="CPO"?`<span class="tag" style="background:#9c27b0">CPO</span>`:t==="DPU"?`<span class="tag" style="background:#607d8b">DPU</span>`:"").join("");
+const nameHtml=DEV_URL[d.id]?`<span class="dev-name-wrap"><a class="device-link" href="${DEV_URL[d.id]}" target="_blank" title="官方文档">${d.name}</a><button class="copy-btn" onclick="event.stopPropagation();copyPN(this,'${d.name}')" title="复制">&#x1F4CB;</button></span>`:`<span class="dev-name-wrap">${d.name}<button class="copy-btn" onclick="event.stopPropagation();copyPN(this,'${d.name}')" title="复制">&#x1F4CB;</button></span>`;
+return`<div class="card" data-cat="${d.cat}" data-id="${d.id}"><div class="card-header" onclick="toggleCard('${d.id}')"><span class="name">${nameHtml} ${tagHtml}</span><span class="summary">${d.summary}</span><span class="arrow">&#x25B6;</span></div><div class="card-body">${renderRateBox(d)}<div class="spec-grid">${specHtml}</div>${skuHtml}${d.modules.length?`<div style="margin-top:.4rem;font-weight:600;font-size:.85rem">LinkX 原厂光模块</div>`:""}${modHtml}</div></div>`}
+
+function renderCatalogTable(cat){
+let html="";
+CATALOG.forEach(g=>{
+if(cat&&cat!=="all-mod"&&g.cat!==cat)return;
+html+=`<div style="font-weight:600;font-size:.85rem;margin:.6rem 0 .2rem">${g.group}</div>`;
+html+=`<table class="mod-table"><thead><tr><th>型号</th><th>速率</th><th>封装</th><th>散热</th><th>颜色标识</th><th>光纤</th><th>波长</th><th>距离</th><th>连接器</th><th>功耗</th><th>协议</th><th>备注</th><th>Application</th></tr></thead><tbody>`;
+g.items.forEach(it=>{
+const pnCell=MOD_URL[it.pn]?`<td class="pn"><span onclick="copyPN(this,'${it.pn}')" title="点击复制" style="cursor:pointer">${it.pn}</span><a class="doc-link" href="${MOD_URL[it.pn]}" target="_blank" title="官方文档">&#x1F517;</a></td>`:`<td class="pn" onclick="copyPN(this,'${it.pn}')" title="点击复制">${it.pn}</td>`;
+const app=MOD_APP[it.pn]||"";
+html+=`<tr>${pnCell}<td>${it.rate}</td><td>${it.form||"-"}</td><td>${it.top||"-"}</td><td>${it.color||"-"}</td><td>${it.fiber}</td><td>${it.wl}</td><td>${it.dist}</td><td>${it.conn}</td><td>${it.pwr}</td><td>${protoBadges(it.proto)}</td><td>${it.note}</td><td style="font-size:.68rem;max-width:200px">${app}</td></tr>`});
+html+=`</tbody></table>`});
+return html}
+
+function renderArchOverview(){
+return`<div class="section-title"><span class="icon">&#x1F3ED;</span> NVIDIA 三代网络架构概览</div>
+<div class="arch-grid">
+<div class="arch-card"><div class="arch-header"><span class="arch-badge hopper">Hopper</span><span class="arch-sub">H100 / GH200</span></div><div class="arch-body">
+<div class="arch-row"><span class="arch-label">SuperNIC / DPU</span><span class="arch-val">ConnectX-7 (NDR 400G) + BlueField-3 DPU</span></div>
+<div class="arch-row"><span class="arch-label">IB 交换机</span><span class="arch-val">Quantum-2 (QM9000系列) QM9700 — 64×OSFP, 物理端口800G, 配合CX7常用2×400G (NDR) 模式</span></div>
+<div class="arch-row"><span class="arch-label">ETH 交换机</span><span class="arch-val">Spectrum-4 SN5600/SN5610 — 64×OSFP, 51.2Tbps</span></div>
+<div class="arch-row"><span class="arch-label">SerDes</span><span class="arch-val">100G-PAM4/lane</span></div>
+</div></div>
+<div class="arch-card"><div class="arch-header"><span class="arch-badge blackwell">Blackwell</span><span class="arch-sub">B200 / GB200</span></div><div class="arch-body">
+<div class="arch-row"><span class="arch-label">SuperNIC / DPU</span><span class="arch-val">ConnectX-8 (XDR 800G) + BlueField-3 DPU</span></div>
+<div class="arch-row"><span class="arch-label">IB 交换机</span><span class="arch-val">Quantum-X800 (Q3000系列) Q3400 — 72×OSFP, 200G/lane SerDes, 1.6T光模块提供144×800G端口</span></div>
+<div class="arch-row"><span class="arch-label">ETH 交换机</span><span class="arch-val">Spectrum-4 SN5600/SN5610 — 64×OSFP, 800G端到端吞吐</span></div>
+<div class="arch-row"><span class="arch-label">SerDes</span><span class="arch-val">200G-PAM4/lane</span></div>
+</div></div>
+<div class="arch-card"><div class="arch-header"><span class="arch-badge rubin">Rubin</span><span class="arch-sub">R100 / VR200</span></div><div class="arch-body">
+<div class="arch-row"><span class="arch-label">SuperNIC / DPU</span><span class="arch-val">ConnectX-9 (1.6T) + BlueField-4 (64×Neoverse V2, 800G DPU)</span></div>
+<div class="arch-row"><span class="arch-label">IB 交换机</span><span class="arch-val">Quantum-X800 (Q3000系列) — 未来可能演进至 Quantum-X1600</span></div>
+<div class="arch-row"><span class="arch-label">ETH 交换机</span><span class="arch-val">Spectrum-6 (SN6000系列) — SN6600 64×OSFP (102.4T), SN6800 512×CPO (409.6T), 硅光+CPO</span></div>
+<div class="arch-row"><span class="arch-label">SerDes</span><span class="arch-val">200G-PAM4/lane</span></div>
+</div></div>
+</div>`}
+
+function toggleCard(id){const c=document.querySelector(`.card[data-id="${id}"]`);if(c)c.classList.toggle("open")}
+
+function showModule(pn,detail){
+const m=document.getElementById("modal");
+const detailHtml=Object.entries(detail).map(([k,v])=>`<div class="spec-item"><span class="label">${k}</span><span class="value">${v}</span></div>`).join("");
+const docLink=MOD_URL[pn]?`<a class="doc-link" href="${MOD_URL[pn]}" target="_blank">&#x1F517; 官方文档</a>`:"";
+m.innerHTML=`<button class="close" onclick="closeModal()">&times;</button><h2>光模块详细参数</h2><div class="pn-display">${pn}<button class="copy-btn" onclick="copyPN(this,'${pn}')">&#x1F4CB; 复制</button>${docLink}</div><div class="spec-grid">${detailHtml}</div>`;
+document.getElementById("modalOverlay").classList.add("show")}
+
+function copyPN(btnOrEl,pn){
+const isBtn=btnOrEl.classList&&btnOrEl.classList.contains("copy-btn");
+if(navigator.clipboard&&navigator.clipboard.writeText){
+navigator.clipboard.writeText(pn).then(()=>{showCopied(btnOrEl,isBtn)}).catch(()=>{fallbackCopy(pn);showCopied(btnOrEl,isBtn)});
+}else{fallbackCopy(pn);showCopied(btnOrEl,isBtn)}}
+function fallbackCopy(pn){const ta=document.createElement("textarea");ta.value=pn;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta)}
+function showCopied(el,isBtn){
+if(isBtn){el.innerHTML="&#x2713; 已复制";el.classList.add("copied");setTimeout(()=>{el.innerHTML="&#x1F4CB; 复制";el.classList.remove("copied")},1500)}
+else{const orig=el.textContent;el.textContent="已复制!";el.style.color="var(--accent)";setTimeout(()=>{el.textContent=orig;el.style.color=""},1200)}}
+function closeModal(){document.getElementById("modalOverlay").classList.remove("show")}
+document.getElementById("modalOverlay").addEventListener("click",function(e){if(e.target===this)closeModal()});
+
+// --- Sidebar Tree ---
+let activeNav=null;
+function buildSidebar(){
+const sb=document.getElementById("sidebar");
+let h="";
+// 设备
+h+=treeFolder("&#x1F5A5;","设备","nav-dev",true);
+catOrder.forEach(c=>{
+const devs=DATA.filter(d=>d.cat===c);
+h+=treeSubFolder(catIcons[c],catNames[c],"nav-cat-"+c,true);
+devs.forEach(d=>{h+=treeLeaf(d.name,"nav-dev-"+d.id)});
+h+=`</div>`});
+h+=`</div>`;
+// 架构概览
+h+=treeFolder("&#x1F3ED;","架构概览","nav-arch",false);
+h+=treeLeaf("Hopper","nav-arch-hopper");
+h+=treeLeaf("Blackwell","nav-arch-blackwell");
+h+=treeLeaf("Rubin","nav-arch-rubin");
+h+=`</div>`;
+// LinkX 目录
+h+=treeFolder("&#x1F4D6;","LinkX 目录","nav-linkx",false);
+const cats=[...new Set(CATALOG.map(g=>g.cat))];
+cats.forEach(c=>{h+=treeLeaf(catalogCatNames[c]||c,"nav-cat-"+c)});
+h+=treeLeaf("全部","nav-cat-all-mod");
+h+=`</div>`;
+sb.innerHTML=h;
+// bind events
+sb.querySelectorAll(".tree-item[data-nav]").forEach(el=>{
+el.addEventListener("click",()=>{
+sb.querySelectorAll(".tree-item.active").forEach(x=>x.classList.remove("active"));
+el.classList.add("active");
+navigate(el.dataset.nav);
+document.querySelector('.sidebar').classList.remove('show');
+})});
+// auto-expand first
+sb.querySelector('.tree-children.open')&&sb.querySelector('.tree-children.open');
+}
+function treeFolder(icon,label,id,open){
+return`<div class="tree-item" style="--depth:0" data-toggle="${id}"><span class="arrow${open?' open':''}">&#x25B6;</span><span class="icon">${icon}</span>${label}</div><div class="tree-children${open?' open':''}" id="${id}">`}
+function treeSubFolder(icon,label,id,open){
+return`<div class="tree-item" style="--depth:1" data-toggle="${id}"><span class="arrow${open?' open':''}">&#x25B6;</span><span class="icon">${icon}</span>${label}</div><div class="tree-children${open?' open':''}" id="${id}">`}
+function treeLeaf(label,nav){
+return`<div class="tree-item" style="--depth:2" data-nav="${nav}"><span class="arrow" style="visibility:hidden">&#x25B6;</span>${label}</div>`}
+
+// bind folder toggles after build
+document.addEventListener('click',function(e){
+const item=e.target.closest('.tree-item[data-toggle]');
+if(!item)return;
+const id=item.dataset.toggle;
+const children=document.getElementById(id);
+const arrow=item.querySelector('.arrow');
+if(children){children.classList.toggle('open');arrow&&arrow.classList.toggle('open')}
+});
+
+function navigate(navId){
+const main=document.getElementById("main");
+activeNav=navId;
+if(navId.startsWith("nav-dev-")){
+const devId=navId.replace("nav-dev-","");
+const d=DATA.find(x=>x.id===devId);
+if(d){
+main.innerHTML=`<div class="legend"><span><span class="dot" style="background:var(--ib)"></span> InfiniBand</span><span><span class="dot" style="background:var(--eth)"></span> Ethernet</span><span><span class="dot" style="background:var(--accent)"></span> LinkX 原厂</span></div>`+renderCard(d);
+const card=main.querySelector('.card');if(card)card.classList.add('open');
+}}
+else if(navId.startsWith("nav-cat-")){
+const cat=navId.replace("nav-cat-","");
+if(cat==="all-mod"||CATALOG.some(g=>g.cat===cat)){
+main.innerHTML=`<div class="section-title" style="margin-top:0"><span class="icon">&#x1F4D6;</span> LinkX 全产品目录 — ${cat==="all-mod"?"全部":(catalogCatNames[cat]||cat)}</div>`+renderCatalogTable(cat==="all-mod"?null:cat);
+}}
+else if(navId==="nav-arch"||navId==="nav-arch-hopper"||navId==="nav-arch-blackwell"||navId==="nav-arch-rubin"){
+main.innerHTML=renderArchOverview();
+}
+else{
+main.innerHTML=`<div class="legend"><span><span class="dot" style="background:var(--ib)"></span> InfiniBand</span><span><span class="dot" style="background:var(--eth)"></span> Ethernet</span><span><span class="dot" style="background:var(--accent)"></span> LinkX 原厂</span></div>`;
+catOrder.forEach(c=>{
+const devs=DATA.filter(d=>d.cat===c);
+main.innerHTML+=`<div class="section-title"><span class="icon">${catIcons[c]}</span>${catNames[c]}</div>`;
+devs.forEach(d=>main.innerHTML+=renderCard(d));
+});
+}
+main.innerHTML+=`<div id="footer-container"></div>`;
+}
+
+buildSidebar();
+navigate("nav-dev-qx800");
+document.querySelector('[data-nav="nav-dev-qx800"]')&&document.querySelector('[data-nav="nav-dev-qx800"]').classList.add("active");
+</script>
+<script src="../assets/config.js"></script>
+<script src="../assets/footer.js"></script>
+</body>
+</html>
