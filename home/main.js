@@ -44,6 +44,12 @@ const toolsData = [
 
 // 初始化页面
 function initPage() {
+    // 更新版本号
+    const versionBadge = document.querySelector('.version-badge');
+    if (versionBadge && typeof CONFIG !== 'undefined') {
+        versionBadge.textContent = `v${CONFIG.project.version}`;
+    }
+    
     const toolsGrid = document.getElementById('toolsGrid');
 
     // 生成工具卡片
