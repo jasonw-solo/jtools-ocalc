@@ -203,9 +203,20 @@ ib:{rates:["NDR 400G","HDR 200G","EDR 100G"],serdes:"100G-PAM4/lane",active:[0]}
 eth:null,
 specs:{"ASIC":"Quantum-2","SerDes":"100G-PAM4/lane","交换容量":"51.2Tbps","兼容OS":"NVOS (UFM / MLNX-OS)"},
 skus:[
-{model:"QM9700",opn:"-",height:"1U",cooling:"风冷",power:"AC",ports:"64×OSFP (128×400G)",note:"标准AC"},
-{model:"QM9701",opn:"-",height:"1U",cooling:"风冷",power:"48V DC",ports:"64×OSFP (128×400G)",note:"DC版"},
-{model:"QM9790",opn:"-",height:"1U",cooling:"风冷",power:"AC",ports:"64×OSFP (128×400G)",note:"无SHARP版"}
+{model:"QM9700",opn:"920-9B210-00FN-xxx",height:"1U",cooling:"风冷",power:"AC",ports:"64×OSFP (128×400G)",note:"标准AC"},
+{model:"QM9701",opn:"920-9B210-00FN-ND0",height:"1U",cooling:"风冷",power:"48V DC",ports:"64×OSFP (128×400G)",note:"DC版"},
+{model:"QM9790",opn:"920-9B210-00FN-0D2",height:"1U",cooling:"风冷",power:"AC",ports:"64×OSFP (128×400G)",note:"无SHARP版"}
+],
+modules:[]},
+{id:"qx8",cat:"ib-switch",name:"Quantum-X800 (Q3000系列)",tags:["IB","800G"],summary:"XDR 800G InfiniBand交换机系列, 115.2Tbps",
+ib:{rates:["XDR 800G","NDR 400G","HDR 200G"],serdes:"200G-PAM4/lane",active:[0]},
+eth:null,
+specs:{"ASIC":"Quantum-X800","SerDes":"200G-PAM4/lane","交换容量":"115.2Tbps","兼容OS":"NVOS (UFM)"},
+skus:[
+{model:"Q3200-RA",opn:"920-9B34F-00RX-FS0",height:"2U",cooling:"风冷",power:"AC",ports:"2×36×OSFP (72×800G)",note:"双交换机"},
+{model:"Q3400-RA",opn:"920-9B36F-00RX-8S0",height:"4U",cooling:"风冷",power:"AC",ports:"72×OSFP (144×800G)",note:"单交换机AC"},
+{model:"Q3401-RD",opn:"920-9B36P-00RX-8S0",height:"4U",cooling:"风冷",power:"48-54V DC",ports:"72×OSFP (144×800G)",note:"单交换机DC"},
+{model:"Q3450-LD",opn:"920-9B36M-00MX-8ES",height:"4U",cooling:"液冷",power:"48V DC",ports:"144×MPO (144×800G)",note:"CPO硅光"}
 ],
 modules:[]},
 {id:"qm1",cat:"ib-switch",name:"Quantum-1 (QM8000系列)",tags:["IB","200G"],summary:"HDR 200G InfiniBand交换机, 6.4T/8.0T",
@@ -213,7 +224,7 @@ ib:{rates:["HDR 200G","EDR 100G"],serdes:"50G-PAM4/lane",active:[0]},
 eth:null,
 specs:{"ASIC":"Quantum-1","SerDes":"50G-PAM4/lane","交换容量":"6.4T / 8.0T","兼容OS":"NVOS (UFM / MLNX-OS)"},
 skus:[
-{model:"QM8700",opn:"-",height:"1U",cooling:"风冷",power:"AC",ports:"32×QSFP56 或 40×QSFP56",note:"6.4T / 8.0T"}
+{model:"QM8700",opn:"920-9B110-00FN-xxx",height:"1U",cooling:"风冷",power:"AC",ports:"32×QSFP56 或 40×QSFP56",note:"6.4T / 8.0T"}
 ],
 modules:[]},
 {id:"sn6",cat:"eth-switch",name:"Spectrum-6 (SN6000系列)",tags:["ETH","800G"],summary:"800GbE以太网交换机系列, 102.4Tbps",
@@ -221,9 +232,9 @@ ib:null,
 eth:{rates:["800GbE","400GbE","200GbE","100GbE"],serdes:"200G-PAM4/lane",active:[0]},
 specs:{"ASIC":"Spectrum-6","SerDes":"200G-PAM4/lane","交换容量":"102.4Tbps","兼容OS":"NVOS (UFM), Cumulus Linux, SONiC"},
 skus:[
-{model:"SN6600-LD",opn:"-",height:"2U",cooling:"液冷 4×UQD8 v2",power:"48-54VDC Busbar",ports:"64×OSFP (128×800G)",note:"液冷版"},
-{model:"SN6810-LD",opn:"-",height:"2U",cooling:"液冷 2×UQD8 v2",power:"48-54VDC Busbar",ports:"128×MMC-12 CPO (128×800G)",note:"CPO硅光, 无可插拔模块"},
-{model:"SN6800-LD",opn:"-",height:"5U",cooling:"液冷 10×UQD8 v2",power:"48-54VDC Busbar",ports:"512×MMC-12 CPO (2048×200G)",note:"4-ASIC CPO, 409.6T, multiplane"}
+{model:"SN6600-LD",opn:"920-9N62F-00LI-GC1",height:"2U",cooling:"液冷 4×UQD8 v2",power:"48-54VDC Busbar",ports:"64×OSFP (128×800G)",note:"液冷版"},
+{model:"SN6810-LD",opn:"920-9N67K-00LA-GC0",height:"2U",cooling:"液冷 2×UQD8 v2",power:"48-54VDC Busbar",ports:"128×MMC-12 CPO (128×800G)",note:"CPO硅光, 无可插拔模块"},
+{model:"SN6800-LD",opn:"920-9N64K-00LI-GC0",height:"5U",cooling:"液冷 10×UQD8 v2",power:"48-54VDC Busbar",ports:"512×MMC-12 CPO (2048×200G)",note:"4-ASIC CPO, 409.6T, multiplane"}
 ],
 modules:[]},
 {id:"sn5000",cat:"eth-switch",name:"Spectrum-4 (SN5000系列)",tags:["ETH","800G"],summary:"Spectrum-4 以太网交换机系列, 51.2Tbps/25.6Tbps",
@@ -243,9 +254,9 @@ ib:null,
 eth:{rates:["400GbE","200GbE","100GbE","50GbE","25GbE"],serdes:"50G-PAM4/lane",active:[0]},
 specs:{"ASIC":"Spectrum-3","SerDes":"50G-PAM4/lane","交换容量":"12.8T / 6.4T","兼容OS":"NVOS (MLNX-OS), Cumulus Linux, ONIE, SONiC"},
 skus:[
-{model:"SN4700",opn:"MSN4700-WS2F/R等",height:"1U",cooling:"风冷",power:"2×AC",ports:"32×QSFP-DD (12.8T)",note:"400GbE, P2C/C2P, Onyx/Cumulus/ONIE"},
-{model:"SN4600C",opn:"MSN4600-CS2F/R等",height:"2U",cooling:"风冷",power:"2×AC",ports:"64×QSFP28 (6.4T)",note:"100GbE, P2C/C2P, Onyx/Cumulus/ONIE"},
-{model:"SN4600",opn:"MSN4600-VS2FC/RC等",height:"2U",cooling:"风冷",power:"2×AC",ports:"64×QSFP56 (6.4T)",note:"200GbE, P2C/C2P, Cumulus/ONIE"}
+{model:"SN4700",opn:"920-9N301-00FB-0C0",height:"1U",cooling:"风冷",power:"2×AC",ports:"32×QSFP-DD (12.8T)",note:"400GbE, P2C/C2P, Onyx/Cumulus/ONIE"},
+{model:"SN4600C",opn:"920-9N302-00F7-0C2",height:"2U",cooling:"风冷",power:"2×AC",ports:"64×QSFP28 (6.4T)",note:"100GbE, P2C/C2P, Onyx/Cumulus/ONIE"},
+{model:"SN4600",opn:"920-9N302-00R7-0C0",height:"2U",cooling:"风冷",power:"2×AC",ports:"64×QSFP56 (6.4T)",note:"200GbE, P2C/C2P, Cumulus/ONIE"}
 ],
 modules:[]},
 {id:"sn3",cat:"eth-switch",name:"Spectrum-2 (SN3000)",tags:["ETH","100G"],summary:"100GbE以太网交换机系列, 6.4Tbps",
@@ -253,9 +264,9 @@ ib:null,
 eth:{rates:["100GbE","50GbE","25GbE"],serdes:"25G-NRZ/lane",active:[0]},
 specs:{"ASIC":"Spectrum-2","SerDes":"25G-NRZ/lane","交换容量":"6.4T / 3.2T / 2.4T","兼容OS":"NVOS (MLNX-OS), Cumulus Linux, ONIE, SONiC"},
 skus:[
-{model:"SN3700",opn:"MSN3700-VS2F/R等",height:"1U",cooling:"风冷",power:"2×AC",ports:"32×QSFP56 (6.4T)",note:"200GbE, P2C/C2P, Onyx/Cumulus/ONIE"},
-{model:"SN3700C",opn:"MSN3700-CS2F/R等",height:"1U",cooling:"风冷",power:"2×AC",ports:"32×QSFP28 (3.2T)",note:"100GbE, P2C/C2P, Onyx/Cumulus/ONIE"},
-{model:"SN3420",opn:"MSN3420-CB2F/R等",height:"1U",cooling:"风冷",power:"2×AC",ports:"48×SFP28 + 12×QSFP28 (2.4T)",note:"25/100GbE ToR, P2C/C2P, Onyx/Cumulus/ONIE"}
+{model:"SN3700",opn:"920-9N201-00F7-0C0",height:"1U",cooling:"风冷",power:"2×AC",ports:"32×QSFP56 (6.4T)",note:"200GbE, P2C/C2P, Onyx/Cumulus/ONIE"},
+{model:"SN3700C",opn:"920-9N201-00FA-0C0",height:"1U",cooling:"风冷",power:"2×AC",ports:"32×QSFP28 (3.2T)",note:"100GbE, P2C/C2P, Onyx/Cumulus/ONIE"},
+{model:"SN3420",opn:"920-9N213-00F7-0C0",height:"1U",cooling:"风冷",power:"2×AC",ports:"48×SFP28 + 12×QSFP28 (2.4T)",note:"25/100GbE ToR, P2C/C2P, Onyx/Cumulus/ONIE"}
 ],
 modules:[]},
 {id:"cx9",cat:"supernic",name:"ConnectX-9",tags:["IB","ETH","1.6T"],summary:"SuperNIC, 1.6T/800G, OSFP224/QSFP112, PCIe Gen6",
@@ -263,9 +274,9 @@ ib:{rates:["XDR 800G","NDR 400G","HDR 200G","EDR 100G"],serdes:"200G-PAM4/lane",
 eth:{rates:["800GbE","400GbE","200GbE","100GbE","50GbE","25GbE"],serdes:"200G-PAM4/lane",active:[0],note:"与IB共享200G-PAM4 SerDes"},
 specs:{"总带宽":"800G (1.6T双口)","Host":"PCIe Gen6 x16","形态":"1P OSFP224 / 2P QSFP112"},
 skus:[
-{model:"C9180",opn:"900-9X91E-00EB-ST0等",height:"-",cooling:"风冷",power:"PCIe Gen6 x16",ports:"1×OSFP224, XDR 800G/800GbE",note:"Socket-Direct, IB XDR/NDR/HDR"},
+{model:"C9180",opn:"900-9X91E-00EB-ST0",height:"-",cooling:"风冷",power:"PCIe Gen6 x16",ports:"1×OSFP224, XDR 800G/800GbE",note:"Socket-Direct, IB XDR/NDR/HDR"},
 {model:"C9180",opn:"900-9X91E-00EB-DT0",height:"-",cooling:"风冷",power:"PCIe Gen6 x16",ports:"1×OSFP224, XDR 800G/800GbE",note:"DSP option, MCIO root complex for GPU/SSD"},
-{model:"C9240",opn:"900-9X91Q-00CN-ST0等",height:"-",cooling:"风冷",power:"PCIe Gen6 x16",ports:"2×QSFP112, NDR 400G/400GbE",note:"Socket-Direct, IB XDR/NDR/HDR"}
+{model:"C9240",opn:"900-9X91Q-00CN-ST0",height:"-",cooling:"风冷",power:"PCIe Gen6 x16",ports:"2×QSFP112, NDR 400G/400GbE",note:"Socket-Direct, IB XDR/NDR/HDR"}
 ],
 modules:[]},
 {id:"cx8",cat:"supernic",name:"ConnectX-8",tags:["IB","ETH","800G"],summary:"SuperNIC, 800G, OSFP/QSFP112, PCIe Gen6",
@@ -273,9 +284,9 @@ ib:{rates:["XDR 800G","NDR 400G","HDR 200G","EDR 100G"],serdes:"200G-PAM4/lane",
 eth:{rates:["400GbE","200GbE","100GbE","50GbE","25GbE"],serdes:"100G-PAM4/lane",active:[0],note:"ETH最高400G (100G/lane), 低于IB"},
 specs:{"总带宽":"800 Gb/s","Host":"PCIe Gen6 x16","形态":"1P OSFP / 2P QSFP112"},
 skus:[
-{model:"C8180",opn:"900-9X81E-00EX-ST0等",height:"-",cooling:"风冷",power:"PCIe Gen6 x16",ports:"1×OSFP, XDR 800G/400GbE",note:"Socket-Direct/Multi-Host, IB XDR/NDR/HDR"},
-{model:"C8180L",opn:"900-9X81E-00EX-DT0等",height:"-",cooling:"风冷",power:"PCIe Gen6 x16",ports:"1×OSFP, XDR 800G/400GbE",note:"Socket-Direct/Multi-Host, IB XDR/NDR/HDR"},
-{model:"C8240",opn:"900-9X81Q-00CN-ST0等",height:"-",cooling:"风冷",power:"PCIe Gen6 x16",ports:"2×QSFP112, NDR 400G/400GbE",note:"DSP option, MCIO root complex, IB XDR/NDR/HDR"}
+{model:"C8180",opn:"900-9X81E-00EX-ST0",height:"-",cooling:"风冷",power:"PCIe Gen6 x16",ports:"1×OSFP, XDR 800G/400GbE",note:"Socket-Direct/Multi-Host, IB XDR/NDR/HDR"},
+{model:"C8180L",opn:"900-9X81E-00EX-SL0",height:"-",cooling:"风冷",power:"PCIe Gen6 x16",ports:"1×OSFP, XDR 800G/400GbE",note:"Socket-Direct/Multi-Host, IB XDR/NDR/HDR"},
+{model:"C8240",opn:"900-9X81Q-00CN-ST0",height:"-",cooling:"风冷",power:"PCIe Gen6 x16",ports:"2×QSFP112, NDR 400G/400GbE",note:"DSP option, MCIO root complex, IB XDR/NDR/HDR"}
 ],
 modules:[]},
 {id:"cx7",cat:"supernic",name:"ConnectX-7",tags:["IB","ETH","400G"],summary:"400G SuperNIC, PCIe Gen4/5, IB+ETH双模",
@@ -304,13 +315,19 @@ ib:{rates:["NDR 400G","HDR 200G","EDR 100G"],serdes:"100G-PAM4/lane",active:[0],
 eth:{rates:["400GbE","200GbE","100GbE","50GbE","25GbE"],serdes:"100G-PAM4/lane",active:[0]},
 specs:{"网络带宽":"400 Gb/s","Host":"PCIe 5.0 x16","安全":"IPsec/TLS/MACsec/PSP, PKA, TRNG","存储":"NVMe-oF, NVMe/TCP, BlueField SNAP"},
 skus:[
-{model:"B3240",opn:"900-9D3B6-00CN-AB0等",height:"Dual-Slot FHHL",cooling:"风冷",power:"x16+Ext",ports:"2×QSFP112, NDR 400G/400GbE",note:"P-Series 16核, 32GB DDR5, Crypto, BMC"},
+{model:"B3240",opn:"900-9D3B6-00CN-AB0",height:"Dual-Slot FHHL",cooling:"风冷",power:"x16+Ext",ports:"2×QSFP112, NDR 400G/400GbE",note:"P-Series 16核, 32GB DDR5, Crypto, BMC"},
+{model:"B3240",opn:"900-9D3B6-00SN-AB0",height:"Dual-Slot FHHL",cooling:"风冷",power:"x16+Ext",ports:"2×QSFP112, NDR 400G/400GbE",note:"P-Series 16核, 32GB DDR5, 无Crypto, BMC"},
 {model:"B3240",opn:"900-9D3B6-00CN-PA0",height:"Single-Slot FHHL",cooling:"风冷",power:"x16+Ext",ports:"2×QSFP112, NDR 400G/400GbE",note:"P-Series 16核, 32GB, 冷通道服务器专用"},
-{model:"B3220",opn:"900-9D3B6-00CV-AA0等",height:"Single-Slot FHHL",cooling:"风冷",power:"x16+Ext",ports:"2×QSFP112, NDR200 200G/200GbE",note:"P-Series 16核, 32GB DDR5, Crypto, BMC"},
-{model:"B3210E",opn:"900-9D3B6-00CC-EA0等",height:"Single-Slot FHHL",cooling:"风冷",power:"x16+Ext",ports:"2×QSFP112, HDR100 100G/100GbE",note:"E-Series 16核, 32GB DDR5, Crypto, BMC"},
-{model:"B3220L",opn:"900-9D3B4-00CV-EA0等",height:"Single-Slot FHHL",cooling:"风冷",power:"x16",ports:"2×QSFP112, NDR200 200G/200GbE",note:"SuperNIC, E-Series 8核, 16GB, Crypto"},
-{model:"B3210L",opn:"900-9D3B4-00CC-EA0等",height:"Single-Slot FHHL",cooling:"风冷",power:"x16",ports:"2×QSFP112, HDR100 100G/100GbE",note:"SuperNIC, E-Series 8核, 16GB, Crypto"},
-{model:"B3140H",opn:"900-9D3D4-00EN-HA0等",height:"Single-Slot HHHL",cooling:"风冷",power:"x16",ports:"1×QSFP112, NDR 400G/400GbE",note:"SuperNIC, E-Series 8核, 16GB, Crypto"}
+{model:"B3220",opn:"900-9D3B6-00CV-AA0",height:"Single-Slot FHHL",cooling:"风冷",power:"x16+Ext",ports:"2×QSFP112, NDR200 200G/200GbE",note:"P-Series 16核, 32GB DDR5, Crypto, BMC"},
+{model:"B3220",opn:"900-9D3B6-00SV-AA0",height:"Single-Slot FHHL",cooling:"风冷",power:"x16+Ext",ports:"2×QSFP112, NDR200 200G/200GbE",note:"P-Series 16核, 32GB DDR5, 无Crypto, BMC"},
+{model:"B3210E",opn:"900-9D3B6-00CC-EA0",height:"Single-Slot FHHL",cooling:"风冷",power:"x16+Ext",ports:"2×QSFP112, HDR100 100G/100GbE",note:"E-Series 16核, 32GB DDR5, Crypto, BMC"},
+{model:"B3210E",opn:"900-9D3B6-00SC-EA0",height:"Single-Slot FHHL",cooling:"风冷",power:"x16+Ext",ports:"2×QSFP112, HDR100 100G/100GbE",note:"E-Series 16核, 32GB DDR5, 无Crypto, BMC"},
+{model:"B3220L",opn:"900-9D3B4-00CV-EA0",height:"Single-Slot FHHL",cooling:"风冷",power:"x16",ports:"2×QSFP112, NDR200 200G/200GbE",note:"SuperNIC, E-Series 8核, 16GB, Crypto"},
+{model:"B3220L",opn:"900-9D3B4-00SV-EA0",height:"Single-Slot FHHL",cooling:"风冷",power:"x16",ports:"2×QSFP112, NDR200 200G/200GbE",note:"SuperNIC, E-Series 8核, 16GB, 无Crypto"},
+{model:"B3210L",opn:"900-9D3B4-00CC-EA0",height:"Single-Slot FHHL",cooling:"风冷",power:"x16",ports:"2×QSFP112, HDR100 100G/100GbE",note:"SuperNIC, E-Series 8核, 16GB, Crypto"},
+{model:"B3210L",opn:"900-9D3B4-00SC-EA0",height:"Single-Slot FHHL",cooling:"风冷",power:"x16",ports:"2×QSFP112, HDR100 100G/100GbE",note:"SuperNIC, E-Series 8核, 16GB, 无Crypto"},
+{model:"B3140H",opn:"900-9D3D4-00EN-HA0",height:"Single-Slot HHHL",cooling:"风冷",power:"x16",ports:"1×QSFP112, NDR 400G/400GbE",note:"SuperNIC, E-Series 8核, 16GB, Crypto"},
+{model:"B3140H",opn:"900-9D3D4-00NN-HA0",height:"Single-Slot HHHL",cooling:"风冷",power:"x16",ports:"1×QSFP112, NDR 400G/400GbE",note:"SuperNIC, E-Series 8核, 16GB, 无Crypto"}
 ],
 modules:[]}
 ];
@@ -375,6 +392,9 @@ const MOD_OPN={
 "MMS4C10":[{legacy:"MMS4C10",opn:"980-9IAU0-00XM00",desc:"RHS, FRO, Gen2, XDR Only"},{legacy:"MMS4C10",opn:"980-9IAU0-00XM01",desc:"IHS, FRO, Gen2, XDR Only"}],
 "MMS4C11":[{legacy:"MMS4C11",opn:"980-9IAU1-00XM00",desc:"RHS, FRO, Gen2, Ethernet Only"},{legacy:"MMS4C11",opn:"980-9IAU1-00XM01",desc:"IHS, FRO, Gen2, Ethernet Only"}],
 "MMS4X00-NS":[{legacy:"MMS4X00-NS",opn:"980-9I30H-00NM00",desc:"Finned top"},{legacy:"MMS4X00-NS-FLT",opn:"980-9I30I-00NM00",desc:"Flat top"}],
+"MMS4X00-NM":[{legacy:"MMS4X00-NM",opn:"980-9I30G-00NM00",desc:"Finned top, 500m"},{legacy:"MMS4X00-NM-FLT",opn:"980-9I301-00NM00",desc:"Flat top, 500m"}],
+"MMS4X90-NR":[{legacy:"MMS4X90-NR",opn:"980-9IB70-00YL00",desc:"2xLR4, 10km, finned"}],
+"MMS4X00-NM-HGX":[{legacy:"MMS4X00-NM-HGX",opn:"980-9I302-00NM00",desc:"Flat top, 500m, HGX Rubin NVL8"}],
 "MCA4K00":[{legacy:"MCA4K00-NCAAD",opn:"980-9IAK0-NCAAD",desc:"1m, IHS"},{legacy:"MCA4K00-NCAAE",opn:"980-9IAK0-NCAAE",desc:"2m, IHS"},{legacy:"MCA4K00-NCAAF",opn:"980-9IAK0-NCAAF",desc:"3m, IHS"},{legacy:"MCA4K00-NCAAG",opn:"980-9IAK0-NCAAG",desc:"4m, IHS"},{legacy:"MCA4K00-NCAAH",opn:"980-9IAK0-NCAAH",desc:"5m, IHS"},{legacy:"MCA4K00-NCBAD",opn:"980-9IAK0-NCBAD",desc:"1m, RHS"},{legacy:"MCA4K00-NCBAE",opn:"980-9IAK0-NCBAE",desc:"2m, RHS"},{legacy:"MCA4K00-NCBAF",opn:"980-9IAK0-NCBAF",desc:"3m, RHS"},{legacy:"MCA4K00-NCBAG",opn:"980-9IAK0-NCBAG",desc:"4m, RHS"},{legacy:"MCA4K00-NCBAH",opn:"980-9IAK0-NCBAH",desc:"5m, RHS"}],
 "MCA4K50":[{legacy:"MCA4K50-NCAAD",opn:"980-9IAK5-NCAAD",desc:"1m, IHS"},{legacy:"MCA4K50-NCAAE",opn:"980-9IAK5-NCAAE",desc:"2m, IHS"},{legacy:"MCA4K50-NCAAF",opn:"980-9IAK5-NCAAF",desc:"3m, IHS"},{legacy:"MCA4K50-NCAAG",opn:"980-9IAK5-NCAAG",desc:"4m, IHS"},{legacy:"MCA4K50-NCAAH",opn:"980-9IAK5-NCAAH",desc:"5m, IHS"},{legacy:"MCA4K50-NCBAD",opn:"980-9IAK5-NCBAD",desc:"1m, RHS"},{legacy:"MCA4K50-NCBAE",opn:"980-9IAK5-NCBAE",desc:"2m, RHS"},{legacy:"MCA4K50-NCBAF",opn:"980-9IAK5-NCBAF",desc:"3m, RHS"},{legacy:"MCA4K50-NCBAG",opn:"980-9IAK5-NCBAG",desc:"4m, RHS"},{legacy:"MCA4K50-NCBAH",opn:"980-9IAK5-NCBAH",desc:"5m, RHS"}],
 "MCA7K10":[{legacy:"MCA7K10-NCAAD",opn:"980-9IAK7-NCAAD",desc:"1m, IHS→RHS"},{legacy:"MCA7K10-NCAAE",opn:"980-9IAK7-NCAAE",desc:"2m, IHS→RHS"},{legacy:"MCA7K10-NCAAF",opn:"980-9IAK7-NCAAF",desc:"3m, IHS→RHS"}],
@@ -382,7 +402,27 @@ const MOD_OPN={
 "MCP7Y10":[{legacy:"MCP7Y10-NCAAD",opn:"980-9I7Y1-NCAAD",desc:"1m"},{legacy:"MCP7Y10-NCAAE",opn:"980-9I7Y1-NCAAE",desc:"2m"},{legacy:"MCP7Y10-NCAAF",opn:"980-9I7Y1-NCAAF",desc:"3m"}],
 "MCA4J80":[{legacy:"MCA4J80-NCAAF",opn:"980-9IAJ8-NCAAF",desc:"3m, IHS"},{legacy:"MCA4J80-NCAAG",opn:"980-9IAJ8-NCAAG",desc:"4m, IHS"},{legacy:"MCA4J80-NCAAH",opn:"980-9IAJ8-NCAAH",desc:"5m, IHS"},{legacy:"MCA4J80-NCBAF",opn:"980-9IAJ8-NCBAF",desc:"3m, RHS"},{legacy:"MCA4J80-NCBAG",opn:"980-9IAJ8-NCBAG",desc:"4m, RHS"},{legacy:"MCA4J80-NCBAH",opn:"980-9IAJ8-NCBAH",desc:"5m, RHS"}],
 "MCP1600":[{legacy:"MCP1600-CBAA",opn:"980-9I160-CBAA",desc:"1m, CA-L"},{legacy:"MCP1600-CBAB",opn:"980-9I160-CBAB",desc:"2m, CA-L"},{legacy:"MCP1600-CBAC",opn:"980-9I160-CBAC",desc:"3m, CA-L"},{legacy:"MCP1600-CBAD",opn:"980-9I160-CBAD",desc:"4m, CA-L"},{legacy:"MCP1600-CBAE",opn:"980-9I160-CBAE",desc:"5m, CA-L"},{legacy:"MCP1600-CBBA",opn:"980-9I160-CBBA",desc:"1m, CA-N"},{legacy:"MCP1600-CBBB",opn:"980-9I160-CBBB",desc:"2m, CA-N"},{legacy:"MCP1600-CBBC",opn:"980-9I160-CBBC",desc:"3m, CA-N"},{legacy:"MCP1600-CBBD",opn:"980-9I160-CBBD",desc:"4m, CA-N"}],
-"MAM1Q00A":[{legacy:"MAM1Q00A-CAAA",opn:"980-9I1Q0-CAAA",desc:"QSA Adapter"},{legacy:"MAM1Q00A-CABA",opn:"980-9I1Q0-CABA",desc:"QSA Adapter"},{legacy:"MAM1Q00A-CBAA",opn:"980-9I1Q0-CBAA",desc:"QSA Adapter"},{legacy:"MAM1Q00A-CBBA",opn:"980-9I1Q0-CBBA",desc:"QSA Adapter"}]
+"MAM1Q00A":[{legacy:"MAM1Q00A-CAAA",opn:"980-9I1Q0-CAAA",desc:"QSA Adapter"},{legacy:"MAM1Q00A-CABA",opn:"980-9I1Q0-CABA",desc:"QSA Adapter"},{legacy:"MAM1Q00A-CBAA",opn:"980-9I1Q0-CBAA",desc:"QSA Adapter"},{legacy:"MAM1Q00A-CBBA",opn:"980-9I1Q0-CBBA",desc:"QSA Adapter"}],
+"MMS4A20":[{legacy:"MMS4A20-XM800",opn:"980-9IAT0-00XM00",desc:"800Gbps, OSFP DR4, MPO,APC 1310nm SMF, 500m, RHS"}],
+"MMS4X00-NM16":[{legacy:"MMS4X00-NM16",opn:"980-9I30J-F4NM00",desc:"800Gbps, Ethernet, OSFP, 1xMPO16, 1310nm SMF, 500m, finned"}],
+"MMS4X50-NM":[{legacy:"MMS4X50-NM",opn:"980-9I30L-00N000",desc:"800Gbps, 2xFR4, 2xNDR, OSFP, 2xLC-LC, 1310nm SMF, 2km, finned"}],
+"MMS4X00-NS-T":[{legacy:"MMS4X00-NS-T",opn:"980-9I30H-F4NM00",desc:"800GBPS,2X400GbE, OSFP, 2XMPO12 APC, 1310NM SMF, 100M, FINNED"}],
+"MMS4X00-NM-T":[{legacy:"MMS4X00-NM-T",opn:"980-9I30G-F4NM00",desc:"800GBPS,2X400GbE, OSFP, 2XMPO, 1310NM SMF, 500M, FINNED"}],
+"MMA4Z00-NS-T":[{legacy:"MMA4Z00-NS-T",opn:"980-9I510-F4NS00",desc:"800GBPS,2X400GbE, OSFP, 2XMPO12 APC, 850NM MMF, 50M, FINNED"}],
+"MMA4Z00-NS400":[{legacy:"MMA4Z00-NS400",opn:"980-9I51S-00NS00",desc:"400Gbps, NDR, OSFP, MPO12 APC, 850nm, 50m, flat top"}],
+"MMA4Z00-NS400-T":[{legacy:"MMA4Z00-NS400-T",opn:"980-9I51S-F4NS00",desc:"400GBPS,400GbE, OSFP, MPO12 APC, 850NM MMF, 50M, FLAT TOP"}],
+"MMS4X00-NS400":[{legacy:"MMS4X00-NS400",opn:"980-9I31N-00NM00",desc:"400Gbps, NDR, OSFP, MPO, 1310nm SMF, 100m, flat top"}],
+"MMA1Z00-NS400":[{legacy:"MMA1Z00-NS400",opn:"980-9I693-00NS00",desc:"400Gbps,NDR, QSFP112, MPO12 APC, 850nm MMF, 50m, flat top"}],
+"MMA1Z00-NS400-T":[{legacy:"MMA1Z00-NS400-T",opn:"980-9I693-F4NS00",desc:"400GBPS,400GbE, QSFP112, MPO12 APC, 850NM MMF, 50M, FLAT TOP"}],
+"MMS1X00-NS400":[{legacy:"MMS1X00-NS400",opn:"980-9I068-00NM00",desc:"400Gbps, NDR, QSFP112, MPO, 1310nm SMF, 100m, flat top"}],
+"MMA1B00-E100":[{legacy:"MMA1B00-E100",opn:"980-9I17L-00E000",desc:"IB EDR, QSFP28, MPO, 850nm, 100m"}],
+"MMA1B00-C100D":[{legacy:"MMA1B00-C100D",opn:"980-9I149-00CS00",desc:"100GbE, QSFP28, MPO, 850nm, SR4, 100m, DDMI"}],
+"MMS1V70-CM":[{legacy:"MMS1V70-CM",opn:"980-9I042-00C000",desc:"100GbE, QSFP28, LC-LC, 1310nm, DR1"}],
+"MMS1V00-WM":[{legacy:"MMS1V00-WM",opn:"980-9I16Y-00W000",desc:"400GbE, QSFP-DD, DR4, 500m SM"}],
+"MCP4Y10-Nxxx":[{legacy:"MCP4Y10-N00A",opn:"980-9IA0K-00N00A",desc:"800Gb/s, OSFP, 0.5m"},{legacy:"MCP4Y10-N001",opn:"980-9IA0F-00N001",desc:"800Gb/s, OSFP, 1m"},{legacy:"MCP4Y10-N01A",opn:"980-9IA0Q-00N01A",desc:"800Gb/s, OSFP, 1.5m"},{legacy:"MCP4Y10-N002",opn:"980-9IA0I-00N002",desc:"800Gb/s, OSFP, 2m"}],
+"MCP7Y10":[{legacy:"MCP7Y10-N001",opn:"980-9I928-00N001",desc:"800Gb/s to 2x400Gb/s, OSFP to 2xQSFP112, 1m"},{legacy:"MCP7Y10-N01A",opn:"980-9I80A-00N01A",desc:"800Gb/s to 2x400Gb/s, OSFP to 2xQSFP112, 1.5m"},{legacy:"MCP7Y10-N002",opn:"980-9I929-00N002",desc:"800Gb/s to 2x400Gb/s, OSFP to 2xQSFP112, 2m"},{legacy:"MCP7Y10-N02A",opn:"980-9I80Q-00N02A",desc:"800Gb/s to 2x400Gb/s, OSFP to 2xQSFP112, 2.5m"},{legacy:"MCP7Y10-N003",opn:"980-9I80P-00N003",desc:"800Gb/s to 2x400Gb/s, OSFP to 2xQSFP112, 3m"}],
+"MFA7U10-H00x":[{legacy:"MFA7U10-H003",opn:"980-9I41X-00H003",desc:"400Gb/s to 2x200Gb/s, OSFP to 2xQSFP56, 3m"},{legacy:"MFA7U10-H005",opn:"980-9I11Z-00H005",desc:"400Gb/s to 2x200Gb/s, OSFP to 2xQSFP56, 5m"},{legacy:"MFA7U10-H010",opn:"980-9I111-00H010",desc:"400Gb/s to 2x200Gb/s, OSFP to 2xQSFP56, 10m"},{legacy:"MFA7U10-H015",opn:"980-9I113-00H015",desc:"400Gb/s to 2x200Gb/s, OSFP to 2xQSFP56, 15m"},{legacy:"MFA7U10-H020",opn:"980-9I115-00H020",desc:"400Gb/s to 2x200Gb/s, OSFP to 2xQSFP56, 20m"},{legacy:"MFA7U10-H030",opn:"980-9I117-00H030",desc:"400Gb/s to 2x200Gb/s, OSFP to 2xQSFP56, 30m"}],
+"MFS1S00-HxxxV":[{legacy:"MFS1S00-H003V",opn:"980-9I457-00H003",desc:"200Gbps, QSFP56, 3m"},{legacy:"MFS1S00-H005V",opn:"980-9I45D-00H005",desc:"200Gbps, QSFP56, 5m"},{legacy:"MFS1S00-H010V",opn:"980-9I45J-00H010",desc:"200Gbps, QSFP56, 10m"},{legacy:"MFS1S00-H015V",opn:"980-9I45O-00H015",desc:"200Gbps, QSFP56, 15m"},{legacy:"MFS1S00-H020V",opn:"980-9I45T-00H020",desc:"200Gbps, QSFP56, 20m"},{legacy:"MFS1S00-H030V",opn:"980-9I440-00H030",desc:"200Gbps, QSFP56, 30m"},{legacy:"MFS1S00-H050V",opn:"980-9I447-00H050",desc:"200Gbps, QSFP56, 50m"},{legacy:"MFS1S00-H100V",opn:"980-9I44H-00H100",desc:"200Gbps, QSFP56, 100m"}]
 };
 const CATALOG=[
 {cat:"1.6t",group:"1.6T XDR 光模块 (OSFP224)",items:[
@@ -394,8 +434,7 @@ const CATALOG=[
 {pn:"MMS4A20",rate:"800G (DR4)",fiber:"SM",wl:"1310nm",dist:"500m",conn:"1×MPO-12/APC",pwr:"18W",temp:"0~70°C",proto:"IB XDR",form:"OSFP",top:"flat top",color:"-",note:"Single-port RHS, CMIS 4.0"}
 ]},
 {cat:"800g",group:"800G NDR 光模块 (OSFP, 100G-PAM4/lane)",items:[
-{pn:"MMS4X00-NM",rate:"800G (2xDR4)",fiber:"SM",wl:"1310nm",dist:"500m",conn:"2×MPO-12/APC",pwr:"17W",temp:"0~70°C",proto:"IB NDR / ETH",form:"OSFP",top:"finned top",color:"purple tab",note:"CMIS 4.0"},
-{pn:"MMS4X00-NM-FLT",rate:"800G (2xDR4)",fiber:"SM",wl:"1310nm",dist:"500m",conn:"2×MPO-12/APC",pwr:"17W",temp:"0~70°C",proto:"IB NDR / ETH",form:"OSFP",top:"flat top",color:"purple tab",note:"DGX/H100, 没有独立页面(在MMS4X00-NM主页里有简介), CMIS 4.0"},
+{pn:"MMS4X00-NM",rate:"800G (2xDR4)",fiber:"SM",wl:"1310nm",dist:"500m",conn:"2×MPO-12/APC",pwr:"17W",temp:"0~70°C",proto:"IB NDR / ETH",form:"OSFP",top:"finned/flat top",color:"purple tab",note:"CMIS 4.0"},
 {pn:"MMS4X00-NM-HGX",rate:"800G (2xDR4)",fiber:"SM",wl:"1310nm",dist:"500m",conn:"2×MPO-12/APC",pwr:"15W",temp:"0~70°C",proto:"ETH",form:"OSFP",top:"flat top",color:"-",note:"Rubin NVL8 only, CMIS 4.0+"},
 {pn:"MMS4X50-NM",rate:"800G (2xFR4)",fiber:"SM",wl:"CWDM4 EML",dist:"2km",conn:"2×LC Duplex",pwr:"17W",temp:"0~70°C",proto:"IB NDR / ETH",form:"OSFP",top:"finned top",color:"bright green tab",note:"CMIS 5.0"},
 {pn:"MMS4X90-NR",rate:"800G (2xLR4)",fiber:"SM",wl:"CWDM4 EML",dist:"10km",conn:"2×LC Duplex",pwr:"17W",temp:"0~70°C",proto:"ETH",form:"OSFP",top:"finned top",color:"-",note:"CMIS 5.0"},
