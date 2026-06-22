@@ -8,7 +8,9 @@
 :root{--bg:#f8f9fa;--card:#fff;--border:#dee2e6;--accent:#76b900;--accent2:#1a1a2e;--text:#212529;--muted:#6c757d;--ib:#0d6efd;--eth:#fd7e14;--linkx:#76b900;--sidebar-w:260px}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
-.header{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.header{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+.back-button{display:inline-flex;align-items:center;gap:.35rem;padding:.3rem .7rem;background:rgba(255,255,255,.15);color:#fff;text-decoration:none;border-radius:5px;font-size:.82rem;font-weight:500;transition:all .2s;border:1px solid rgba(255,255,255,.25)}
+.back-button:hover{background:rgba(255,255,255,.3);transform:translateX(-2px)}
 .header h1{font-size:1.3rem}
 .header h1 .badge{display:inline-block;background:var(--accent);color:#000;padding:.1rem .5rem;border-radius:3px;font-size:.7rem;font-weight:700;margin-left:.5rem}
 .header .subtitle{opacity:.7;font-size:.8rem}
@@ -93,6 +95,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .arch-label{color:var(--muted);white-space:nowrap;min-width:90px;font-weight:600}
 .arch-val{font-weight:400}
 .footer{text-align:center;padding:1rem;color:var(--muted);font-size:.75rem;border-top:1px solid var(--border);margin-top:1.5rem}
+.app-footer{background:var(--card);border-top:1px solid var(--border);padding:.5rem 0;margin-top:auto;text-align:center}
+.app-footer .footer-content{max-width:1200px;margin:0 auto;padding:0 1rem}
+.app-footer p{color:var(--muted);font-size:.75rem;margin:0}
+.app-footer a{color:var(--accent2);text-decoration:none;font-weight:500}
+.app-footer a:hover{text-decoration:underline}
+.app-footer .footer-links{display:flex;justify-content:center;align-items:center;gap:.75rem;flex-wrap:wrap;margin-top:.2rem}
+.app-footer .separator{color:#ccc}
 @media(max-width:900px){
 .sidebar{position:fixed;top:52px;left:0;bottom:0;z-index:50;transform:translateX(-100%);transition:transform .25s}
 .sidebar.show{transform:translateX(0)}
@@ -105,6 +114,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 </head>
 <body>
 <div class="header">
+<a href="../home/index.html" class="back-button">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+<span>返回首页</span>
+</a>
 <h1>NVIDIA LinkX 选型指南 <span class="badge">2026-06</span></h1>
 <span class="subtitle">设备 &harr; LinkX 原厂模块 | 点击查看详细参数</span>
 </div>
@@ -370,20 +383,6 @@ const MOD_APP={
 "MCP1600-C0xxEyyz":"100GbE DAC (switch-to-switch, 1-5m)",
 "MFA1A00-xxxx":"100G IB EDR/ETH AOC (switch-to-switch, 3-100m)"
 };
-const MOD_OPN={
-"MMS4A00":[{legacy:"MMS4A00",opn:"980-9IAH1-00XM00",desc:"IHS (finned top)"},{legacy:"MMS4A00",opn:"980-9IAH0-00XM00",desc:"RHS (flat top)"}],
-"MMS4C10":[{legacy:"MMS4C10",opn:"980-9IAU0-00XM00",desc:"RHS, FRO, Gen2, XDR Only"},{legacy:"MMS4C10",opn:"980-9IAU0-00XM01",desc:"IHS, FRO, Gen2, XDR Only"}],
-"MMS4C11":[{legacy:"MMS4C11",opn:"980-9IAU1-00XM00",desc:"RHS, FRO, Gen2, Ethernet Only"},{legacy:"MMS4C11",opn:"980-9IAU1-00XM01",desc:"IHS, FRO, Gen2, Ethernet Only"}],
-"MMS4X00-NS":[{legacy:"MMS4X00-NS",opn:"980-9I30H-00NM00",desc:"Finned top"},{legacy:"MMS4X00-NS-FLT",opn:"980-9I30I-00NM00",desc:"Flat top"}],
-"MCA4K00":[{legacy:"MCA4K00-NCAAD",opn:"980-9IAK0-NCAAD",desc:"1m, IHS"},{legacy:"MCA4K00-NCAAE",opn:"980-9IAK0-NCAAE",desc:"2m, IHS"},{legacy:"MCA4K00-NCAAF",opn:"980-9IAK0-NCAAF",desc:"3m, IHS"},{legacy:"MCA4K00-NCAAG",opn:"980-9IAK0-NCAAG",desc:"4m, IHS"},{legacy:"MCA4K00-NCAAH",opn:"980-9IAK0-NCAAH",desc:"5m, IHS"},{legacy:"MCA4K00-NCBAD",opn:"980-9IAK0-NCBAD",desc:"1m, RHS"},{legacy:"MCA4K00-NCBAE",opn:"980-9IAK0-NCBAE",desc:"2m, RHS"},{legacy:"MCA4K00-NCBAF",opn:"980-9IAK0-NCBAF",desc:"3m, RHS"},{legacy:"MCA4K00-NCBAG",opn:"980-9IAK0-NCBAG",desc:"4m, RHS"},{legacy:"MCA4K00-NCBAH",opn:"980-9IAK0-NCBAH",desc:"5m, RHS"}],
-"MCA4K50":[{legacy:"MCA4K50-NCAAD",opn:"980-9IAK5-NCAAD",desc:"1m, IHS"},{legacy:"MCA4K50-NCAAE",opn:"980-9IAK5-NCAAE",desc:"2m, IHS"},{legacy:"MCA4K50-NCAAF",opn:"980-9IAK5-NCAAF",desc:"3m, IHS"},{legacy:"MCA4K50-NCAAG",opn:"980-9IAK5-NCAAG",desc:"4m, IHS"},{legacy:"MCA4K50-NCAAH",opn:"980-9IAK5-NCAAH",desc:"5m, IHS"},{legacy:"MCA4K50-NCBAD",opn:"980-9IAK5-NCBAD",desc:"1m, RHS"},{legacy:"MCA4K50-NCBAE",opn:"980-9IAK5-NCBAE",desc:"2m, RHS"},{legacy:"MCA4K50-NCBAF",opn:"980-9IAK5-NCBAF",desc:"3m, RHS"},{legacy:"MCA4K50-NCBAG",opn:"980-9IAK5-NCBAG",desc:"4m, RHS"},{legacy:"MCA4K50-NCBAH",opn:"980-9IAK5-NCBAH",desc:"5m, RHS"}],
-"MCA7K10":[{legacy:"MCA7K10-NCAAD",opn:"980-9IAK7-NCAAD",desc:"1m, IHS→RHS"},{legacy:"MCA7K10-NCAAE",opn:"980-9IAK7-NCAAE",desc:"2m, IHS→RHS"},{legacy:"MCA7K10-NCAAF",opn:"980-9IAK7-NCAAF",desc:"3m, IHS→RHS"}],
-"MCP7Y00":[{legacy:"MCP7Y00-NCAAD",opn:"980-9I7Y0-NCAAD",desc:"1m"},{legacy:"MCP7Y00-NCAAE",opn:"980-9I7Y0-NCAAE",desc:"2m"},{legacy:"MCP7Y00-NCAAF",opn:"980-9I7Y0-NCAAF",desc:"3m"}],
-"MCP7Y10":[{legacy:"MCP7Y10-NCAAD",opn:"980-9I7Y1-NCAAD",desc:"1m"},{legacy:"MCP7Y10-NCAAE",opn:"980-9I7Y1-NCAAE",desc:"2m"},{legacy:"MCP7Y10-NCAAF",opn:"980-9I7Y1-NCAAF",desc:"3m"}],
-"MCA4J80":[{legacy:"MCA4J80-NCAAF",opn:"980-9IAJ8-NCAAF",desc:"3m, IHS"},{legacy:"MCA4J80-NCAAG",opn:"980-9IAJ8-NCAAG",desc:"4m, IHS"},{legacy:"MCA4J80-NCAAH",opn:"980-9IAJ8-NCAAH",desc:"5m, IHS"},{legacy:"MCA4J80-NCBAF",opn:"980-9IAJ8-NCBAF",desc:"3m, RHS"},{legacy:"MCA4J80-NCBAG",opn:"980-9IAJ8-NCBAG",desc:"4m, RHS"},{legacy:"MCA4J80-NCBAH",opn:"980-9IAJ8-NCBAH",desc:"5m, RHS"}],
-"MCP1600":[{legacy:"MCP1600-CBAA",opn:"980-9I160-CBAA",desc:"1m, CA-L"},{legacy:"MCP1600-CBAB",opn:"980-9I160-CBAB",desc:"2m, CA-L"},{legacy:"MCP1600-CBAC",opn:"980-9I160-CBAC",desc:"3m, CA-L"},{legacy:"MCP1600-CBAD",opn:"980-9I160-CBAD",desc:"4m, CA-L"},{legacy:"MCP1600-CBAE",opn:"980-9I160-CBAE",desc:"5m, CA-L"},{legacy:"MCP1600-CBBA",opn:"980-9I160-CBBA",desc:"1m, CA-N"},{legacy:"MCP1600-CBBB",opn:"980-9I160-CBBB",desc:"2m, CA-N"},{legacy:"MCP1600-CBBC",opn:"980-9I160-CBBC",desc:"3m, CA-N"},{legacy:"MCP1600-CBBD",opn:"980-9I160-CBBD",desc:"4m, CA-N"}],
-"MAM1Q00A":[{legacy:"MAM1Q00A-CAAA",opn:"980-9I1Q0-CAAA",desc:"QSA Adapter"},{legacy:"MAM1Q00A-CABA",opn:"980-9I1Q0-CABA",desc:"QSA Adapter"},{legacy:"MAM1Q00A-CBAA",opn:"980-9I1Q0-CBAA",desc:"QSA Adapter"},{legacy:"MAM1Q00A-CBBA",opn:"980-9I1Q0-CBBA",desc:"QSA Adapter"}]
-};
 const CATALOG=[
 {cat:"1.6t",group:"1.6T XDR 光模块 (OSFP224)",items:[
 {pn:"MMS4A00",rate:"1.6T (2xDR4)",fiber:"SM",wl:"1310nm",dist:"500m",conn:"2×MPO-12/APC",pwr:"33.5W",temp:"20~70°C",proto:"IB XDR",form:"OSFP224",top:"finned top",color:"-",note:"IHS (switch), CMIS 4.0"},
@@ -505,13 +504,11 @@ let html="";
 CATALOG.forEach(g=>{
 if(cat&&cat!=="all-mod"&&g.cat!==cat)return;
 html+=`<div style="font-weight:600;font-size:.85rem;margin:.6rem 0 .2rem">${g.group}</div>`;
-html+=`<table class="mod-table"><thead><tr><th>型号</th><th>速率</th><th>封装</th><th>散热</th><th>颜色标识</th><th>光纤</th><th>波长</th><th>距离</th><th>连接器</th><th>功耗</th><th>协议</th><th>备注</th><th>Application</th><th>Ordering Info</th></tr></thead><tbody>`;
+html+=`<table class="mod-table"><thead><tr><th>型号</th><th>速率</th><th>封装</th><th>散热</th><th>颜色标识</th><th>光纤</th><th>波长</th><th>距离</th><th>连接器</th><th>功耗</th><th>协议</th><th>备注</th><th>Application</th></tr></thead><tbody>`;
 g.items.forEach(it=>{
 const pnCell=MOD_URL[it.pn]?`<td class="pn"><span onclick="copyPN(this,'${it.pn}')" title="点击复制" style="cursor:pointer">${it.pn}</span><a class="doc-link" href="${MOD_URL[it.pn]}" target="_blank" title="官方文档">&#x1F517;</a></td>`:`<td class="pn" onclick="copyPN(this,'${it.pn}')" title="点击复制">${it.pn}</td>`;
 const app=MOD_APP[it.pn]||"";
-const opnData=MOD_OPN[it.pn];
-const opnCell=opnData?`<td style="font-size:.68rem;max-width:180px">${opnData.map(o=>`<div style="margin-bottom:.15rem"><span style="cursor:pointer;color:var(--accent2)" onclick="copyPN(this,'${o.opn}')">${o.opn}</span><br/><span style="color:var(--muted)">${o.desc}</span></div>`).join("")}</td>`:"<td>-</td>";
-html+=`<tr>${pnCell}<td>${it.rate}</td><td>${it.form||"-"}</td><td>${it.top||"-"}</td><td>${it.color||"-"}</td><td>${it.fiber}</td><td>${it.wl}</td><td>${it.dist}</td><td>${it.conn}</td><td>${it.pwr}</td><td>${protoBadges(it.proto)}</td><td>${it.note}</td><td style="font-size:.68rem;max-width:200px">${app}</td>${opnCell}</tr>`});
+html+=`<tr>${pnCell}<td>${it.rate}</td><td>${it.form||"-"}</td><td>${it.top||"-"}</td><td>${it.color||"-"}</td><td>${it.fiber}</td><td>${it.wl}</td><td>${it.dist}</td><td>${it.conn}</td><td>${it.pwr}</td><td>${protoBadges(it.proto)}</td><td>${it.note}</td><td style="font-size:.68rem;max-width:200px">${app}</td></tr>`});
 html+=`</tbody></table>`});
 return html}
 
@@ -564,18 +561,6 @@ let activeNav=null;
 function buildSidebar(){
 const sb=document.getElementById("sidebar");
 let h="";
-// 架构概览
-h+=treeFolder("&#x1F3ED;","架构概览","nav-arch",false);
-h+=treeLeaf("Hopper","nav-arch-hopper");
-h+=treeLeaf("Blackwell","nav-arch-blackwell");
-h+=treeLeaf("Rubin","nav-arch-rubin");
-h+=`</div>`;
-// LinkX 目录
-h+=treeFolder("&#x1F4D6;","LinkX 目录","nav-linkx",true);
-const cats=[...new Set(CATALOG.map(g=>g.cat))];
-cats.forEach(c=>{h+=treeLeaf(catalogCatNames[c]||c,"nav-cat-"+c)});
-h+=treeLeaf("全部","nav-cat-all-mod");
-h+=`</div>`;
 // 设备
 h+=treeFolder("&#x1F5A5;","设备","nav-dev",true);
 catOrder.forEach(c=>{
@@ -583,6 +568,18 @@ const devs=DATA.filter(d=>d.cat===c);
 h+=treeSubFolder(catIcons[c],catNames[c],"nav-cat-"+c,true);
 devs.forEach(d=>{h+=treeLeaf(d.name,"nav-dev-"+d.id)});
 h+=`</div>`});
+h+=`</div>`;
+// 架构概览
+h+=treeFolder("&#x1F3ED;","架构概览","nav-arch",false);
+h+=treeLeaf("Hopper","nav-arch-hopper");
+h+=treeLeaf("Blackwell","nav-arch-blackwell");
+h+=treeLeaf("Rubin","nav-arch-rubin");
+h+=`</div>`;
+// LinkX 目录
+h+=treeFolder("&#x1F4D6;","LinkX 目录","nav-linkx",false);
+const cats=[...new Set(CATALOG.map(g=>g.cat))];
+cats.forEach(c=>{h+=treeLeaf(catalogCatNames[c]||c,"nav-cat-"+c)});
+h+=treeLeaf("全部","nav-cat-all-mod");
 h+=`</div>`;
 sb.innerHTML=h;
 // bind events
@@ -593,12 +590,8 @@ el.classList.add("active");
 navigate(el.dataset.nav);
 document.querySelector('.sidebar').classList.remove('show');
 })});
-// auto-navigate to 1.6T
-const defaultNav=document.querySelector('.tree-item[data-nav="nav-cat-1.6t"]');
-if(defaultNav){
-defaultNav.classList.add('active');
-navigate('nav-cat-1.6t');
-}
+// auto-expand first
+sb.querySelector('.tree-children.open')&&sb.querySelector('.tree-children.open');
 }
 function treeFolder(icon,label,id,open){
 return`<div class="tree-item" style="--depth:0" data-toggle="${id}"><span class="arrow${open?' open':''}">&#x25B6;</span><span class="icon">${icon}</span>${label}</div><div class="tree-children${open?' open':''}" id="${id}">`}
@@ -643,10 +636,14 @@ main.innerHTML+=`<div class="section-title"><span class="icon">${catIcons[c]}</s
 devs.forEach(d=>main.innerHTML+=renderCard(d));
 });
 }
-main.innerHTML+=`<div class="footer">NVIDIA LinkX 选型指南 | 数据来源: NVIDIA 官方 Datasheet + docs.nvidia.com | 2026-06-04<br>所有模块均为 NVIDIA LinkX 原厂，第三方模块兼容性需在 MLNX OFED 驱动中单独验证</div>`;
+main.innerHTML+=`<div id="footer-container"></div>`;
 }
 
 buildSidebar();
+navigate("nav-dev-qx800");
+document.querySelector('[data-nav="nav-dev-qx800"]')&&document.querySelector('[data-nav="nav-dev-qx800"]').classList.add("active");
 </script>
+<script src="../assets/config.js"></script>
+<script src="../assets/footer.js"></script>
 </body>
 </html>
